@@ -1,0 +1,167 @@
+\documentclass[11pt]{article}
+\usepackage[american]{circuitikz}
+\usepackage{udec-pset}
+\doc{1}{Leyes Fundamentales y Reducción de Circuitos}
+
+\begin{document}
+\crearEncabezado
+
+\begin{boxTeoria}{Leyes Fundamentales}
+
+    \begin{itemize}
+        \item Ley de Ohm: $V = I \cdot R \quad R = \rho\frac{l}{A}$
+        \item Potencia Eléctrica: $\displaystyle P = V \cdot I = I^2 R = \frac{V^2}{R}$
+        \item Ley de Kirchhoff de Corrientes (KCL): $\displaystyle\sum I_{in} = \sum I_{out}$
+        \item Ley de Kirchhoff de Voltajes (KVL): $\displaystyle\sum V_{loop} = 0$
+    \end{itemize}
+
+\end{boxTeoria}
+
+\begin{boxTeoria}{Reducción de Circuitos}
+
+    \begin{itemize}
+        \item Serie: $\displaystyle R_{eq} = \sum_{i=1}^{n}R_i = R_1 + R_2 + \ldots + R_n$
+        \item Paralelo: $\displaystyle\frac {1}{R_{eq}} = \sum_{i=1}^{n} \frac{1}{R_i} = \frac{1}{R_1} + \frac{1}{R_2} + \ldots + \frac{1}{R_n}$.
+    \end{itemize}
+
+    \textit{Nota: Para dos elementos en paralelo, la resistencia equivalente es: $\displaystyle R_{eq} = \frac{R_1 R_2}{R_1 + R_2}$}
+
+
+\end{boxTeoria}
+
+\begin{boxTeoria}{Divisores}
+
+    \begin{itemize}
+        \item Divisor de Voltaje: $\displaystyle V_{x} = V_\mathrm{total} \cdot \frac{R_x}{R_\mathrm{total}}$
+        \item Divisor de Corriente: $\displaystyle I_{x} = I_\mathrm{total} \cdot \frac{G_x}{G_\mathrm{total}} \quad \left(G = \frac{1}{R}\right)$
+    \end{itemize}
+
+\end{boxTeoria}
+
+\begin{boxTeoria}{Transformaciones Delta-Estrella ($\Delta - Y$).}
+
+    \begin{itemize}
+        \item De $\Delta$ a $Y$:
+              \begin{equation*}
+                  R_1 = \frac{R_a R_b}{R_a + R_b + R_c}, \quad
+                  R_2 = \frac{R_b R_c}{R_a + R_b + R_c}, \quad
+                  R_3 = \frac{R_a R_c}{R_a + R_b + R_c}
+              \end{equation*}
+        \item De $Y$ a $\Delta$:
+              \begin{equation*}
+                  R_a = \frac{R_1 R_2 + R_2 R_3 + R_3 R_1}{R_1}, \quad
+                  R_b = \frac{R_1 R_2 + R_2 R_3 + R_3 R_1}{R_2}, \quad
+                  R_c = \frac{R_1 R_2 + R_2 R_3 + R_3 R_1}{R_3}
+              \end{equation*}
+        \item Si la carga es balanceada, entonces:
+              \begin{equation*}
+                  R_\Delta = 3R_Y
+              \end{equation*}
+    \end{itemize}
+
+\end{boxTeoria}
+
+\newpage
+\problema[Ley de Ohm y Potencia] Una bombilla incandescente tiene una potencia nominal de $60\text{ W}$ cuando opera conectada a una fuente de $120\text{ V}$. Determine la corriente que circula por la bombilla y su resistencia eléctrica en condiciones de operación nominal. Luego, asumiendo que el filamento es de tungsteno ($\rho = 5.6 \times 10^{-8}\ \Omega\cdot\text{m}$) con una sección transversal circular de radio $r = 20\ \mu\text{m}$, calcule la longitud total del filamento necesaria para alcanzar dicha resistencia.
+
+\problema[Leyes de Kirchhoff] Dados los circuitos de las figuras~\ref{fig:G1-cal:lvk_lck:a} y \ref{fig:G1-cal:lvk_lck:b}, identifique el número de nodos, ramas y mallas presentes en cada red. A continuación, determine las corrientes $i_1$ e $i_2$ en la figura~\ref{fig:G1-cal:lvk_lck:a} aplicando la Ley de Corrientes de Kirchhoff (LCK), y obtenga las caídas de tensión $V_1$ y $V_2$ en la figura~\ref{fig:G1-cal:lvk_lck:b} mediante la Ley de Tensiones de Kirchhoff (LVK).
+
+\begin{figure}[H]
+    \centering
+    \subfloat[\label{fig:G1-cal:lvk_lck:a}]{
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.7, transform shape]
+            \draw (0,0) to[generic, f=$-8\,\mathrm{A}$] (0,4) -- (4,4) to [generic, f=$i_1$] (0,0) to[generic, f=$-8\,\mathrm{A}$] (8,0) to[generic, f_=$8\,\mathrm{A}$] (8,4) -- (4,4) to[generic, f=$i_2$] (8,0);
+        \end{circuitikz}
+        \shorthandon{<>}}%
+    \hspace{0.04\textwidth}%
+    \subfloat[\label{fig:G1-cal:lvk_lck:b}]{
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.7, transform shape]
+            \draw (0,4) to[generic, v=$1\,\mathrm{V}$] (4,4) to[generic, v=$2\,\mathrm{V}$] (8,4) to[generic, v^=$V_2$] (8,0) -- (0,0);
+            \draw (4,4) to[generic, v=$5\,\mathrm{V}$] (4,0);
+            \draw (0,4) to[generic, v_=$V_1$] (0,0);
+        \end{circuitikz}
+        \shorthandon{<>}}%
+    \caption{}
+\end{figure}
+
+\problema[Circuitos Serie/Paralelo] Dados los circuitos de las figuras~\ref{fig:G1-cal:serie_paralelo:a} y \ref{fig:G1-cal:serie_paralelo:b}, calcule la resistencia equivalente vista desde las terminales de cada fuente y obtenga los valores de $V$ e $i$ señalados aplicando directamente las relaciones de divisor de tensión y divisor de corriente, respectivamente.
+
+\begin{figure}[H]
+    \centering
+    \subfloat[\label{fig:G1-cal:serie_paralelo:a}]{
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.7, transform shape, american]
+            % Divisor de Tensión (Circuito Serie)
+            \draw (0,0) to[V, l=$12\,\mathrm{V}$, invert] (0,4)
+            to[R, l=$4\,\Omega$] (4,4)
+            to[R, l=$8\,\Omega$, v=$V$] (4,0)
+            -- (0,0);
+        \end{circuitikz}
+        \shorthandon{<>}}%
+    \hspace{0.08\textwidth}%
+    \subfloat[\label{fig:G1-cal:serie_paralelo:b}]{
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.7, transform shape, american]
+            % Divisor de Corriente (Circuito Paralelo)
+            \draw (0,0) to[I, l=$6\,\mathrm{A}$] (0,4) -- (2,4)
+            to[R, l=$6\,\Omega$] (2,0) -- (0,0);
+            \draw (2,4) to[short, f_=$i$] (4,4)
+            to[R, l=$3\,\Omega$] (4,0) -- (2,0);
+        \end{circuitikz}
+        \shorthandon{<>}}%
+    \caption{}
+\end{figure}
+\newpage
+\problema[Transformación $\Delta-Y$] Dadas las configuraciones de resistores en las figuras~\ref{fig:G1-cal:delta_estrella:a} y \ref{fig:G1-cal:delta_estrella:b}, determine la red equivalente correspondiente realizando la transformación Delta a Estrella ($\Delta \to Y$) para la primera y de Estrella a Delta ($Y \to \Delta$) para la segunda.
+
+\begin{figure}[H]
+    \centering
+    % --- Circuito Delta no balanceado (para transformar a Estrella) ---
+    \subfloat[\label{fig:G1-cal:delta_estrella:a}]{
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.75, transform shape, american]
+            % Coordenadas de los terminales A, B, C
+            \coordinate (A) at (2,3.5);
+            \coordinate (B) at (0,0);
+            \coordinate (C) at (4,0);
+
+            % Conexiones Delta
+            \draw (A) to[R, l_=$10\,\Omega$, *-*] (B)
+            to[R, l_=$20\,\Omega$, *-*] (C)
+            to[R, l_=$30\,\Omega$, *-*] (A);
+
+            % Etiquetas de terminales externos
+            \node[above] at (A) {$A$};
+            \node[below left] at (B) {$B$};
+            \node[below right] at (C) {$C$};
+        \end{circuitikz}
+        \shorthandon{<>}}%
+    \hspace{0.08\textwidth}%
+    % --- Circuito Estrella balanceado (para transformar a Delta) ---
+    \subfloat[\label{fig:G1-cal:delta_estrella:b}]{
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.75, transform shape, american]
+            % Coordenadas de los terminales A, B, C y el neutro N
+            \coordinate (A) at (2,3.5);
+            \coordinate (B) at (0,0);
+            \coordinate (C) at (4,0);
+            \coordinate (N) at (2,1.2);
+
+            % Conexiones Estrella
+            \draw (A) to[R, l=$15\,\Omega$, *-*] (N)
+            (B) to[R, l=$15\,\Omega$, *-*] (N)
+            (C) to[R, l_=$15\,\Omega$, *-*] (N);
+
+            % Etiquetas de terminales externos y neutro
+            \node[above] at (A) {$A$};
+            \node[below left] at (B) {$B$};
+            \node[below right] at (C) {$C$};
+            \node[below=2pt] at (N) {$N$};
+        \end{circuitikz}
+        \shorthandon{<>}}%
+    \caption{}
+\end{figure}
+
+\end{document}

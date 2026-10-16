@@ -1,0 +1,504 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage[american]{circuitikz}
+\usepackage{udec-slides}
+\slide{5}{Teoremas Útiles para el Análisis de Circuitos}
+
+\begin{document}
+
+\primeraDiapo
+
+\begin{frame}[plain]
+    \centering
+    {\Huge \bfseries DIE-LIMPIADAS}
+\end{frame}
+
+% --- FRAME 1: DEPORTES, JUEGOS DE MESA Y ESPORTS ---
+\begin{frame}{Actividades}
+    \begin{columns}[t]
+        \begin{column}{0.32\textwidth}
+            \textbf{Deportes}
+            \begin{itemize}
+                \item Fútbol
+                \item Vóley
+                \item Quemados
+                \item Básquetbol
+                \item Tenis
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.32\textwidth}
+            \textbf{Juegos de Mesa}
+            \begin{itemize}
+                \item Catan
+                \item Ajedrez
+                \item Noche de Casino
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.32\textwidth}
+            \textbf{eSports}
+            \begin{itemize}
+                \item Valorant
+                \item League of Legends
+                \item FIFA
+                \item Smash Bros.
+                \item Clash Royale
+                \item Brawl Stars
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- FRAME 2: PEÑA Y CANDIDATURAS ---
+\begin{frame}{Inauguración y Candidaturas}
+    \begin{boxTeoria}{Inicio del Evento: La Peña}
+        El primer día arrancamos con la \textbf{Peña de Inicio}, la cual contará con juegos tradicionales como:
+        \begin{itemize}
+            \item Trivia
+            \item Tirar la cuerda
+            \item Carrera de 3 pies
+            \item Carrera de borrachos
+        \end{itemize}
+    \end{boxTeoria}
+
+    \begin{boxTeoria}{Elección de Reyes y Príncipes}
+        \begin{itemize}
+            \item \textbf{Príncipe y Princesa:} Representantes de 1.er y 2.º año (¡Ahí entran ustedes!).
+            \item \textbf{Rey y Reina:} Representantes de años superiores.
+        \end{itemize}
+    \end{boxTeoria}
+\end{frame}
+
+% --- SUPERPOSICIÓN: CONCEPTO MATEMÁTICO ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Principio de Superposición}
+        En cualquier circuito \textbf{lineal}, la respuesta total (tensión o corriente) en un elemento es igual a la \textbf{suma algebraica} de las respuestas individuales producidas por cada fuente \textbf{independiente} actuando por separado.
+
+        \vspace{0.2cm}
+        \textbf{Expresión Matemática:} \\
+        Si un circuito tiene $n$ fuentes independientes, la respuesta total $x$ (que representa un voltaje $v$ o una corriente $i$) se define como:
+        \begin{equation*}
+            x_{\text{total}} = \sum_{k=1}^{n} x_{k} = x_{1} + x_{2} + \dots + x_{n}
+        \end{equation*}
+        Donde cada término $x_{k}$ representa la contribución exclusiva de la $k$-ésima fuente independiente.
+    \end{boxTeoria}
+\end{frame}
+
+% --- SUPERPOSICIÓN: REGLAS DE APLICACIÓN ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Reglas de Aplicación para Superposición}
+        Para calcular cada contribución $x_{k}$, se debe dejar \textbf{activa solo una fuente independiente} a la vez, ``apagando'' temporalmente el resto:
+
+        \begin{itemize}
+            \item \textbf{Fuentes de Tensión apagadas:} Se reemplazan por un \textbf{cortocircuito} ($V = 0\text{ V}$).
+            \item \textbf{Fuentes de Corriente apagadas:} Se reemplazan por un \textbf{circuito abierto} ($I = 0\text{ A}$).
+            \item \textbf{Fuentes Dependientes:} \textbf{NUNCA} se apagan. Estas modelan la física interna del circuito y permanecen intactas en todos los subcircuitos.
+        \end{itemize}
+
+        \vspace{0.2cm}
+        \textbf{Importante:} La superposición \textbf{NO} es válida para calcular potencia directamente, ya que la potencia responde a una relación cuadrática no lineal ($P = I^2 R$).
+    \end{boxTeoria}
+\end{frame}
+
+
+% --- EJERCICIO 1 (REEMPLAZO): SUPERPOSICIÓN BÁSICA ---
+\begin{frame}{Ejercicio 1}
+    Utilice el principio de superposición para determinar la corriente marcada como $i$ en el circuito mostrado.
+
+    \vspace{0.4cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            % Barra inferior común
+            \draw (0,0) -- (6,0);
+
+            % Rama izquierda: Fuente de corriente hacia arriba
+            \draw (0,0) to[I, l=$10\text{ A}$] (0,3) -- (3,3);
+
+            % Rama central: Resistencia de 4 ohm con corriente i hacia abajo
+            \draw (3,3) to[R, l_=$4\,\Omega$, i^=$i$] (3,0);
+
+            % Nodos centrales
+            \fill (3,3) circle (2pt);
+            \fill (3,0) circle (2pt);
+
+            % Rama derecha: Resistencia de 9 ohm y fuente de tensión
+            \draw (3,3) to[R, l=$6\,\Omega$] (6,3)
+            to[V, v=$3\text{ V}$] (6,0); % + arriba, - abajo
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- EJERCICIO 2: SUPERPOSICIÓN CON FUENTE DEPENDIENTE ---
+\begin{frame}{Ejercicio 2}
+    Utilice el principio de superposición para obtener el valor de la corriente $I_x$ en el circuito mostrado.
+
+    \vspace{0.4cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape]
+            % Barra inferior común y tierra
+            \draw (0,0) -- (8,0);
+            \draw (4,0) node[ground]{};
+
+            % Fuente de tensión 1V (+ arriba, - abajo) y resistencia de 5 kOhm
+            \draw (0,0) to[V, v=$1\text{ V}$, invert] (0,3)
+            to[R, l=$5\,\Omega$] (2.5,3);
+
+            % Nodo 1 y resistencia de 7 kOhm con corriente Ix cayendo
+            \draw (2.5,3) to[R, l=$7\,\Omega$, i=$I_x$] (2.5,0);
+            \fill (2.5,3) circle (2pt);
+
+            % Fuente dependiente de tensión 0.2 Ix (- a la izquierda, + a la derecha)
+            \draw (2.5,3) to[cV, v=$2I_x$, invert] (5.5,3);
+
+            % Nodo 2 y resistencia de 2 kOhm
+            \draw (5.5,3) to[R, l=$2\,\Omega$] (5.5,0);
+            \fill (5.5,3) circle (2pt);
+
+            % Fuente de corriente de 2 A cayendo
+            \draw (5.5,3) -- (8,3)
+            to[I, l=$2\text{ A}$] (8,0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- TRANSFORMACIÓN DE FUENTES ---
+\begin{frame}
+    \begin{boxTeoria}{Transformación de Fuentes}
+        Permite intercambiar fuentes prácticas conservando exactamente el mismo comportamiento eléctrico en los terminales A y B del circuito.
+
+        \begin{center}
+            \begin{circuitikz}[scale=0.7, transform shape]
+                % Lado Izquierdo: Fuente de Tensión en Serie
+                \draw (0,0) to[V, v=$v_s$, invert] (0,2.5)
+                to[R, l=$R_s$] (2.5,2.5);
+                \draw (0,0) -- (3,0);
+                \draw (2.5,2.5) -- (3,2.5);
+                \fill (3,2.5) circle (2pt) node[right] {A};
+                \fill (3,0) circle (2pt) node[right] {B};
+
+                % Flecha de Equivalencia
+                \draw[<->, thick, >=stealth] (4,1.25) -- (5.5,1.25);
+
+                % Lado Derecho: Fuente de Corriente en Paralelo
+                \draw (6.5,0) to[I, l=$i_s$] (6.5,2.5);
+                \draw (8.5,0) to[R, l=$R_s$] (8.5,2.5);
+                \draw (6.5,2.5) -- (9.5,2.5);
+                \draw (6.5,0) -- (9.5,0);
+                \fill (9.5,2.5) circle (2pt) node[right] {A};
+                \fill (9.5,0) circle (2pt) node[right] {B};
+            \end{circuitikz}
+        \end{center}
+
+        \textbf{Ecuación de Relación:}
+        \begin{equation*}
+            v_s = i_s \cdot R_s \qquad \iff \qquad i_s = \frac{v_s}{R_s}
+        \end{equation*}
+
+        \textbf{Regla de Sentido:} La flecha de la fuente de corriente ($i_s$) apunta hacia el mismo terminal que el polo positivo ($+$) de la fuente de tensión ($v_s$).
+    \end{boxTeoria}
+\end{frame}
+
+\begin{frame}{Ejercicio 3}
+    Determine la corriente marcada como $i$ en el circuito mostrado.
+
+    \vspace{0.4cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            % Barra inferior común
+            \draw (0,0) -- (9,0);
+
+            % Rama izquierda: Fuente de tensión de 12V y resistencia de 3 M\Omega
+            \draw (0,0) to[V, v=$12\text{ V}$, invert] (0,2.5)
+            to[R, l=$3\,\Omega$] (3,2.5);
+
+            % Rama central 1: Fuente de corriente de 5 uA hacia abajo
+            \draw (3,2.5) to[I, l=$5\,\text{A}$] (3,0);
+
+            % Enlace superior entre ramas centrales
+            \draw (3,2.5) -- (5,2.5);
+
+            % Rama central 2: Resistencia de 2 M\Omega
+            \draw (5,2.5) to[R, l=$2\,\Omega$] (5,0);
+
+            % Nodos de conexión
+            \fill (3,2.5) circle (2pt);
+            \fill (3,0) circle (2pt);
+            \fill (5,2.5) circle (2pt);
+            \fill (5,0) circle (2pt);
+
+            % Rama derecha: Resistencia de 13 M\Omega y fuente de tensión de 7V
+            \draw (5,2.5) to[R, l=$13\,\Omega$, i_=$i$] (9,2.5)
+            to[V, v=$7\text{ V}$] (9,0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- DIAPOSITIVA 1: TEORÍA COMPLETA DE THÉVENIN Y NORTON ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Teoremas de Thévenin y Norton}
+        \small
+        Cualquier red eléctrica lineal compuesta por fuentes e impedancias, vista desde dos terminales A y B, puede reducirse a un circuito equivalente simple:
+
+        \begin{itemize}
+            \item \textbf{Teorema de Thévenin:} Reemplaza la red por una fuente de voltaje en \textbf{serie} con una resistencia $R_{\text{th}}$.
+            \item \textbf{Teorema de Norton:} Reemplaza la red por una fuente de corriente en \textbf{paralelo} con una resistencia $R_{\text{N}}$.
+        \end{itemize}
+
+        \vspace{0.15cm}
+        \textbf{Definición Teórica de Parámetros:}
+        \begin{itemize}
+            \item \textbf{Tensión de Thévenin ($V_{\text{th}}$):} Es exactamente la tensión de \textbf{circuito abierto} entre los terminales ($V_{\text{th}} = V_{oc}$).
+            \item \textbf{Corriente de Norton ($I_{\text{N}}$):} Es exactamente la corriente de \textbf{cortocircuito} que fluye de A hacia B ($I_{\text{N}} = I_{sc}$).
+            \item \textbf{Resistencia Equivalente ($R_{\text{th}} = R_{\text{N}}$):} Es la resistencia vista desde los terminales apagando fuentes independientes, esta comple $R_{\text{th}} = \frac{V_{oc}}{I_{sc}}$.
+        \end{itemize}
+    \end{boxTeoria}
+\end{frame}
+
+% --- DIAPOSITIVA 2: CARACTERIZACIÓN VISUAL Y EQUIVALENTES ---
+\begin{frame}{Visualización de Parámetros y Equivalentes}
+    \begin{boxTeoria}{Obtención de Parámetros y Redes Equivalentes}
+        \centering
+        \small
+        \textbf{1. Medición / Cálculo de Parámetros en la Red Lineal}
+
+        \vspace{0.15cm}
+        \begin{circuitikz}[scale=0.7, transform shape]
+            % --- Circuito Abierto (Voc) ---
+            \draw[thick] (0,0) rectangle (2.0,2.0) node[midway, align=center] {\tiny Red\\Lineal};
+            \draw (2.0,1.6) -- (2.8,1.6); \fill (2.8,1.6) circle (2pt) node[right] {\tiny A};
+            \draw (2.0,0.4) -- (2.8,0.4); \fill (2.8,0.4) circle (2pt) node[right] {\tiny B};
+            \draw (2.8,1.6) to[open, v=\tiny $V_{oc}$] (2.8,0.4);
+            \node at (1.4, -0.3) {\scriptsize \textbf{Circuito Abierto ($V_{oc}$)}};
+
+            % --- Cortocircuito (Isc) ---
+            \begin{scope}[xshift=5.8cm]
+                \draw[thick] (0,0) rectangle (2.0,2.0) node[midway, align=center] {\tiny Red\\Lineal};
+                \draw (2.0,1.6) -- (2.8,1.6); \fill (2.8,1.6) circle (2pt) node[right] {\tiny A};
+                \draw (2.0,0.4) -- (2.8,0.4); \fill (2.8,0.4) circle (2pt) node[right] {\tiny B};
+                \draw (2.8,1.6) to[short, i=\tiny $I_{sc}$] (2.8,0.4);
+                \node at (1.4, -0.3) {\scriptsize \textbf{Cortocircuito ($I_{sc}$)}};
+            \end{scope}
+        \end{circuitikz}
+
+        \vspace{0.3cm}
+        \textbf{2. Circuitos Equivalentes Resultantes}
+
+        \vspace{0.15cm}
+        \begin{circuitikz}[scale=0.7, transform shape]
+            % --- Equivalente de Thévenin ---
+            \draw (0,0.3) to[V, v=\tiny $V_{oc}$, invert] (0,1.7)
+            to[R, l=\tiny $R_{\text{th}}$] (2.5,1.7);
+            \draw (0,0.3) -- (2.5,0.3);
+            \fill (2.5,1.7) circle (2pt) node[right] {\tiny A};
+            \fill (2.5,0.3) circle (2pt) node[right] {\tiny B};
+            \node at (1.25, -0.3) {\scriptsize \textbf{Equivalente Thévenin}};
+
+            % --- Equivalente de Norton ---
+            \begin{scope}[xshift=5.8cm]
+                \draw (0,0.3) to[I, l=\tiny $I_{sc}$] (0,1.7) -- (2.5,1.7);
+                \draw (1.4,1.7) to[R, l=\tiny $R_{\text{th}}$] (1.4,0.3);
+                \draw (0,0.3) -- (2.5,0.3);
+                \fill (2.5,1.7) circle (2pt) node[right] {\tiny A};
+                \fill (2.5,0.3) circle (2pt) node[right] {\tiny B};
+                \node at (1.25, -0.3) {\scriptsize \textbf{Equivalente Norton}};
+            \end{scope}
+        \end{circuitikz}
+    \end{boxTeoria}
+\end{frame}
+
+% --- ESTRATEGIAS Y ENFOQUES THÉVENIN / NORTON ---
+\begin{frame}
+    \begin{boxTeoria}{Estrategias de Resolución (Thévenin / Norton)}
+        \small
+        \textbf{Principio clave:} Sólo se necesitan determinar 2 de los 3 parámetros ($V_{oc}$, $I_{sc}$, $R_{\text{th}}$), ya que estan relacionados por: $R_{\text{th}} = \frac{V_{oc}}{I_{sc}}$.
+
+        \textbf{Métodos para obtener $R_{\text{th}}$ directamente}
+        \begin{itemize}
+            \item \textbf{Sin fuentes dependientes:} Apagar todas las fuentes ind. y reducir resistencias hasta las dos terminales.
+            \item \textbf{Con fuentes dependientes:} Apagar fuentes ind. e inyectar fuente de prueba externa ($R_{\text{th}} = \frac{V_{\text{test}}}{I_{\text{test}}}$).
+        \end{itemize}
+
+        \textbf{Dos Enfoques Principales de Resolución:}
+        \begin{enumerate}
+            \item \textbf{Enfoque 1 (Vía $R_{\text{th}}$ directa):} Obtener primero $R_{\text{th}}$ (ideal si no hay fuentes dependientes) y luego calcular $V_{oc}$ o $I_{sc}$ usando Nodos, Mallas, Superposición, Transformación de Fuentes (para los métodos), etc.
+            \item \textbf{Enfoque 2 (Vía $V_{oc}$ e $I_{sc}$ independientes):} Ignorar el cálculo de $R_{\text{th}}$ e ir directamente a calcular $V_{oc}$ (circuito abierto) e $I_{sc}$ (cortocircuito) (metodos de analisis, transformaciones, etc.). Luego se despeja $R_{\text{th}} = \frac{V_{oc}}{I_{sc}}$.
+        \end{enumerate}
+    \end{boxTeoria}
+\end{frame}
+
+% --- APLICACIÓN 2: THÉVENIN Y NORTON ---
+\begin{frame}{Ejercicio 4}
+    Para el siguiente circuito (dipolo), determine los equivalentes de \textbf{Thévenin} y \textbf{Norton} entre los terminales A y B.
+
+    \vspace{0.4cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape]
+            % Cable superior
+            \draw (0,3) -- (8,3);
+            % Cable inferior
+            \draw (2,0) -- (8,0);
+
+            % Rama 1 (Izquierda)
+            \draw (0,3) to[R, l_=$6\,\Omega$] (0,1.5)
+            to[V, v_=$2\text{ V}$] (0,0); % + arriba, - abajo
+
+            % Fuente de corriente en el cable inferior
+            \draw (2,0) to[I, l=$10\text{ A}$] (0,0); % Flecha hacia la izquierda
+
+            % Rama 2
+            \draw (2,3) to[V, v=$20\text{ V}$] (2,1.5) % + arriba, - abajo
+            to[R, l=$10\,\Omega$] (2,0);
+            \fill (2,3) circle (2pt);
+            \fill (2,0) circle (2pt);
+
+            % Rama 3
+            \draw (4,3) to[R, l=$20\,\Omega$] (4,0);
+            \fill (4,3) circle (2pt);
+            \fill (4,0) circle (2pt);
+
+            % Rama 4
+            \draw (6,3) to[V, v_=$36\text{ V}$, invert] (6,1.5) % + abajo, - arriba
+            to[R, l=$20\,\Omega$] (6,0);
+            \fill (6,3) circle (2pt);
+            \fill (6,0) circle (2pt);
+
+            % Rama 5
+            \draw (8,3) to[R, l=$10\,\Omega$] (8,0);
+            \fill (8,3) circle (2pt);
+            \fill (8,0) circle (2pt);
+
+            % Terminales A y B
+            \draw (8,3) to[R, l=$5/3\,\Omega$] (10.5,3);
+            \draw (8,0) -- (10.5,0);
+            \draw (10.5,3) circle (2pt) node[right] {A};
+            \draw (10.5,0) circle (2pt) node[right] {B};
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- APLICACIÓN 4: PUENTE ---
+\begin{frame}{Ejercicio 5}
+    Determine el equivalente de Thévenin (o Norton) visto desde los terminales A y B para el circuito puente mostrado en la figura.
+
+    \vspace{0.2cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            % Estructura del puente
+            \draw (-2,2) to[R, l=$1\,\Omega$] (0,4);
+            \draw (0,4) to[R, l=$2\,\Omega$] (2,2);
+            \draw (-2,2) to[R, l_=$2\,\Omega$] (0,0);
+            \draw (0,0) to[R, l_=$1\,\Omega$] (2,2);
+
+            % Fuente de corriente central (1 A hacia la izquierda)
+            \draw (2,2) to[I, l_=$1\text{ A}$] (-2,2);
+
+            % Nodos del puente
+            \fill (-2,2) circle (2pt);
+            \fill (0,4) circle (2pt);
+            \fill (2,2) circle (2pt);
+            \fill (0,0) circle (2pt);
+
+            % Ramas hacia los terminales A y B
+            \draw (0,4) -- (1,4) to[R, l=$1\,\Omega$] (3.5,4);
+            \fill (3.5,4) circle (2pt) node[right] {A};
+
+            \draw (0,0) -- (3.5,0);
+            \fill (3.5,0) circle (2pt) node[right] {B};
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- MÁXIMA TRANSFERENCIA DE POTENCIA ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Máxima Transferencia de Potencia}
+        \uncover<2->{En diversas aplicaciones de ingeniería (como electrónica o telecomunicaciones), el objetivo principal suele ser maximizar la cantidad de \textbf{potencia entregada a una carga} ($R_L$), más allá de la eficiencia general del circuito.
+
+                \textbf{Condición Teórica:}
+                La máxima transferencia de potencia hacia la carga se produce única y exclusivamente cuando su valor se iguala a la resistencia de Thévenin de la red conectada a ella:
+                \begin{equation*}
+                    \mathbf{R_L = R_{\text{th}}}
+                \end{equation*}
+
+                \textbf{Cálculo de la Potencia Máxima:}
+                Bajo esta condición de ``acoplamiento de impedancias'', la potencia máxima disipada por la carga se calcula directamente como:
+                \begin{equation*}
+                    P_{\text{max}} = \frac{V_{\text{th}}^2}{4 R_{\text{th}}}
+                \end{equation*}}
+    \end{boxTeoria}
+\end{frame}
+
+% --- APLICACIÓN 3: MÁXIMA TRANSFERENCIA ---
+\begin{frame}{Ejercicio 6}
+    En el circuito adjunto, la resistencia variable $R$ se puede establecer entre $0 \leq R \leq 100\text{ k}\Omega$. Determine (indicando el valor correspondiente de $R$ en cada caso):
+    \begin{enumerate}[a)]
+        \item El valor máximo de la corriente $i_a$.
+        \item El valor máximo del voltaje $v_a$.
+        \item El valor máximo de la potencia suministrada.
+    \end{enumerate}
+
+    \vspace{0.2cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            % Rama izquierda y fuente de voltaje
+            \draw (0,0) to[V, v=$12\text{ V}$, invert] (0,2) % + arriba, - abajo
+            to[R, l=$R$, i=$i_a$, v=$v_a$] (3,2);
+            \draw (0,0) -- (3,0);
+
+            % Rama central: Fuente de corriente
+            \draw (3,2) to[I, l=$2\text{ mA}$] (3,0);
+            \fill (3,2) circle (2pt);
+            \fill (3,0) circle (2pt);
+
+            % Rama de 18 kOhm
+            \draw (3,2) -- (5,2) to[R, l=$18\text{ k}\Omega$] (5,0) -- (3,0);
+            \fill (5,2) circle (2pt);
+            \fill (5,0) circle (2pt);
+
+            % Lazo derecho (12 kOhm y 24 kOhm)
+            \draw (5,2) to[R, l=$12\text{ k}\Omega$] (7,2)
+            -- (7,0)
+            to[R, l=$24\text{ k}\Omega$] (5,0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Ejercicio 7}
+    Para el circuito mostrado en la figura, plantear las ecuaciones necesarias para obtener las corrientes de mallas (método de mallas) y los voltajes de nodos (método de nodos).
+
+    \vspace{0.4cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            % Cables superior e inferior izquierdo
+            \draw (0,5) -- (7,5);
+            \draw (0,0) -- (3.5,0);
+
+            % Rama Izquierda: Fuente de voltaje
+            \draw (0,0) to[V, v=$70\text{ V}$, invert] (0,5);
+
+            % Rama Central: Resistencia, fuente dependiente y resistencia inferior
+            \draw (3.5,5) to[R, l=$80\,\Omega$] (3.5,3.5)
+            to[cI, l_=$8i_x$] (3.5,2);
+            \draw (3.5,2) to[R, l_=$15\,\Omega$] (3.5,0);
+
+            % Rama Derecha (superior): Resistencia vertical y cable inferior
+            \draw (7,5) to[R, l=$50\,\Omega$] (7,2);
+            \draw (7,2) -- (7,0);
+
+            % Rama Inferior Derecha: Resistencia horizontal
+            \draw (3.5,0) to[R, l=$70\,\Omega$] (7,0);
+
+            % Rama Transversal: Fuente de voltaje y corriente de referencia
+            \draw (3.5,2) to[V, v=$30\text{ V}$, i=$i_x$, invert] (7,2);
+
+            % Puntos de conexión (nodos)
+            \fill (3.5,5) circle (2pt);
+            \fill (7,5) circle (2pt);
+            \fill (3.5,2) circle (2pt);
+            \fill (7,2) circle (2pt);
+            \fill (3.5,0) circle (2pt);
+            \fill (7,0) circle (2pt);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+\end{document}

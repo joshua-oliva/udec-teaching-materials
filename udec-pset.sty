@@ -118,16 +118,22 @@
     \else \numeroDoc.\arabic{problemaNum}\fi%
 }
 
-% Macro simplificado y libre para los problemas
+% Formato base para Enunciados: Documento.Problema.Contador
+\renewcommand{\thefigure}{\theproblemaNum}
+\renewcommand{\theequation}{\theproblemaNum-\arabic{equation}}
+
+% Macro de problemas con reinicio total de contadores
 \newcommand{\problema}[1][]{%
     \par \vspace{1.5em}%
     \refstepcounter{problemaNum}%
+    \setcounter{figure}{0}%    <-- Reinicia figuras para el nuevo problema
+    \setcounter{equation}{0}%  <-- Reinicia ecuaciones para el enunciado
     \noindent\ignorespaces%
     {\bfseries Problema \theproblemaNum}%
     \ifstrempty{#1}%
     {\textbf{.}}%
     { \textbf{[#1].}}%
-    \enskip\ignorespaces% Mantiene el texto en la misma línea
+    \enskip\ignorespaces%
 }
 
 % ========== SISTEMA DE SOLUCIONES ==========
@@ -147,8 +153,12 @@
 \AtBeginDocument{
     \if@soluciones
         \newenvironment{solucion}{%
+            % Reinicia contadores internos para la solución
             \setcounter{equation}{0}%
-            \renewcommand{\theequation}{\theproblemaNum.\arabic{equation}}%
+            \setcounter{figure}{0}%
+            % Formato con 'S' para distinguir que pertenecen a la solución
+            \renewcommand{\theequation}{\theproblemaNum-S\arabic{equation}}%
+            \renewcommand{\thefigure}{\theproblemaNum-S\arabic{figure}}%
             \begin{CajaSolucionDef}%
                 }{%
             \end{CajaSolucionDef}%

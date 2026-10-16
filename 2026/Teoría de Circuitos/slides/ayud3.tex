@@ -1,0 +1,293 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage[american]{circuitikz}
+\usepackage{udec-slides}
+\slide{3}{Divisores, Método de Nodos y Síntesis}
+
+\begin{document}
+
+\primeraDiapo
+
+% --- DIVISOR DE TENSIÓN ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Divisor de Tensión}
+        Se aplica a resistencias conectadas en \textbf{serie}. Permite calcular la caída de tensión en una resistencia específica sin determinar previamente la corriente:
+        \begin{equation*}
+            v_k = v_{\text{total}} \cdot \frac{R_k}{R_{\text{eq}}} = v_{\text{total}} \cdot \frac{R_k}{\sum_{j=1}^{n} R_j}
+        \end{equation*}
+
+        \vspace{0.2cm}
+        \textbf{Propiedad clave:} La caída de tensión es directamente proporcional al valor de la resistencia; el elemento con mayor resistencia soporta la mayor fracción del voltaje total.
+    \end{boxTeoria}
+\end{frame}
+
+% --- DIVISOR DE CORRIENTE ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Divisor de Corriente}
+        Se aplica a resistencias conectadas en \textbf{paralelo}. La corriente total se reparte entre las ramas en proporción a sus conductancias:
+        \begin{equation*}
+            i_k = i_{\text{total}} \cdot \frac{G_k}{G_{\text{eq}}} \qquad \text{donde }G=\frac{1}{R}
+        \end{equation*}
+
+        \vspace{0.2cm}
+        \textbf{Propiedad clave:} La corriente es inversamente proporcional a la resistencia; la rama con menor resistencia conduce la mayor parte de la corriente total.
+    \end{boxTeoria}
+\end{frame}
+
+% --- CONCEPTOS PREVIOS: TIERRA Y NODOS ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{El Nodo de Referencia (Tierra)}
+        El voltaje no es un valor absoluto, sino una \textbf{diferencia de potencial} entre dos puntos. Para sistematizar el análisis, es obligatorio establecer un ``nivel del mar'' eléctrico:
+        \begin{itemize}
+            \item \textbf{Aterrizar un nodo:} Consiste en seleccionar arbitrariamente un nodo del circuito y asignarle por definición un potencial de $0\text{ V}$. Este actúa como el \textbf{nodo de referencia}.
+            \item \textbf{Elección estratégica:} Aunque físicamente cualquier nodo puede ser tierra, una correcta elección puede simplificar los cálculos.
+        \end{itemize}
+
+        \vspace{0.2cm}
+        \textbf{Nodos No Referenciales} \\
+        Son el resto de las uniones del circuito. Sus potenciales desconocidos ($v_1, v_2, \dots$) se miden exclusivamente con respecto a la tierra, lo que permite transformar la caída de tensión en cualquier rama a una simple resta algebraica de potenciales nodales ($v_j - v_k$).
+    \end{boxTeoria}
+\end{frame}
+
+\begin{frame}{Marco Teórico}
+    \framesubtitle{Basada en la \textbf{Ley de Corrientes de Kirchhoff (LCK)}}
+    \begin{boxTeoria}{Método de Voltajes de Nodo}
+        \begin{enumerate}
+            \item Se define un \textbf{nodo de referencia} (tierra, $v_0 = 0\text{ V}$) y potenciales nodales $\{v_1, \dots, v_N\}$.
+            \item \textbf{Reducción de nodos triviales:} Si una fuente de tensión (independiente o dependiente) está conectada entre un nodo $j$ y tierra, fija directamente su potencial ($v_j = \pm V_s$), eliminándolo como incógnita del sistema.
+            \item En los nodos restantes, se plantea LCK ($\sum i_{\text{salen}} = 0$) expresando cada corriente en función de los potenciales nodales (mediante la Ley de Ohm):
+                  \begin{equation*}
+                      i_{jk} = G_{jk}(v_j - v_k) \quad \implies \quad \mathbf{G}\,\mathbf{v} = \mathbf{i}_{\text{fuentes}}
+                  \end{equation*}
+            \item Se resuelve el sistema de ecuaciones para obtener los potenciales nodales desconocidos.
+        \end{enumerate}
+    \end{boxTeoria}
+\end{frame}
+
+% --- EJERCICIO 1 (2 NODOS INCÓGNITA) ---
+\begin{frame}{Ejercicio 1}
+    Para el circuito mostrado en la figura, seleccione un nodo de referencia adecuado y determine los potenciales nodales del circuito utilizando el método de voltajes de nodo.
+
+    \vspace{0.4cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            % Barra inferior común
+            \draw (0,0) -- (9,0);
+
+            % Rama izquierda: Fuente de corriente
+            \draw (0,0) to[I, l=$3\text{ A}$] (0,3) -- (3,3);
+
+            % Nodo central 1
+            \draw (3,3) to[R, l=$4\,\Omega$] (3,0);
+            \fill (3,3) circle (2pt);
+
+            % Enlace entre nodo 1 y nodo 2
+            \draw (3,3) to[R, l=$2\,\Omega$] (6,3);
+
+            % Nodo central 2
+            \draw (6,3) to[R, l=$8\,\Omega$] (6,0);
+            \fill (6,3) circle (2pt);
+
+            % Rama derecha: Resistencia y fuente de tensión
+            \draw (6,3) to[R, l=$6\,\Omega$] (9,3)
+            to[V, v=$12\text{ V}$] (9,0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- EJERCICIO 2 (3 NODOS INCÓGNITA) ---
+\begin{frame}{Ejercicio 2}
+    Para el circuito mostrado en la figura, determine los potenciales nodales del circuito aplicando el método de voltajes de nodo.
+
+    \vspace{0.4cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            % Barra inferior común
+            \draw (0,0) -- (12,0);
+
+            % Rama izquierda: Fuente de corriente
+            \draw (0,0) to[I, l=$4\text{ A}$] (0,3) -- (3,3);
+
+            % Nodo 1
+            \draw (3,3) to[R, l=$6\,\Omega$] (3,0);
+            \fill (3,3) circle (2pt);
+
+            % Enlace nodo 1 a nodo 2
+            \draw (3,3) to[R, l=$3\,\Omega$] (6,3);
+
+            % Nodo 2
+            \draw (6,3) to[R, l=$8\,\Omega$] (6,0);
+            \fill (6,3) circle (2pt);
+
+            % Enlace nodo 2 a nodo 3
+            \draw (6,3) to[R, l=$4\,\Omega$] (9,3);
+
+            % Nodo 3
+            \draw (9,3) to[I, l=$2\text{ A}$] (9,0);
+            \fill (9,3) circle (2pt);
+
+            % Rama derecha: Resistencia y fuente de tensión
+            \draw (9,3) to[R, l=$2\,\Omega$] (12,3)
+            to[V, v=$12\text{ V}$] (12,0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- EJERCICIO 3: CERTAMEN ---
+\begin{frame}{Ejercicio 3}
+    Para el circuito mostrado en la figura determine:
+    \begin{enumerate}[a)]
+        \item La tensión $V_{AB}$.
+        \item La corriente $I$.
+        \item El balance de potencia del circuito.
+    \end{enumerate}
+
+    \vspace{0.2cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape]
+            % Rama vertical izquierda con fuente de tensión
+            \draw (0,0) to[V, v=$10\text{ V}$, invert] (0,2.5);
+
+            % Nodo A
+            \node[left] at (0,2.5) {$\text{A}$};
+            \fill (0,2.5) circle (2pt);
+
+            % Puente superior con resistencia de 10/3 ohm
+            \draw (0,2.5) -- (0,4)
+            to[R, l=$10/3\,\Omega$] (7,4)
+            -- (7,2.5);
+
+            % Rama horizontal central: fuente de corriente y resistencia de 18 ohm
+            \draw (0,2.5) to[I, l=$3\text{ A}$] (3.5,2.5)
+            to[R, l=$18\,\Omega$] (7,2.5);
+
+            % Nodo B
+            \node[right] at (7,2.5) {$\text{B}$};
+            \fill (7,2.5) circle (2pt);
+
+            % Rama vertical central: resistencia de 4 ohm y flecha de corriente I
+            \draw (3.5,2.5) to[R, l=$4\,\Omega$, i=$I$] (3.5,0);
+            \fill (3.5,2.5) circle (2pt);
+
+            % Línea inferior con resistencia de 2 ohm
+            \draw (0,0) -- (3.5,0)
+            to[R, l=$2\,\Omega$] (7,0)
+            -- (7,2.5);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+
+% --- CASO ESPECIAL MALLAS (MOTIVACIÓN: SUPERMALLA) ---
+\begin{frame}{Caso Particular en el Método de Mallas}
+    ¿Qué ocurre si se intenta resolver el siguiente circuito con el método de mallas?
+
+    \vspace{0.3cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            % Barra inferior
+            \draw (0,0) -- (6,0);
+
+            % Malla 1: Fuente de tensión izquierda
+            \draw (0,0) to[V, v=$20\text{ V}$, invert] (0,3)
+            to[R, l=$6\,\Omega$] (3,3);
+
+            % Rama compartida: Fuente de corriente
+            \draw (3,3) to[I, l=$4\text{ A}$, invert] (3,0);
+
+            % Malla 2: Enlace superior y rama derecha
+            \draw (3,3) to[R, l=$10\,\Omega$] (6,3)
+            to[R, l=$4\,\Omega$] (6,0);
+
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- CASO PARTICULAR: MÉTODO DE MALLAS (SUPERMALLA) ---
+\begin{frame}{Caso Particular en el Método de Mallas}
+    \begin{boxTeoria}{La Supermalla}
+        Ocurre cuando una \textbf{fuente de corriente} (independiente o dependiente) está compartida entre dos mallas adyacentes:
+        \begin{enumerate}
+            \item \textbf{Ecuación de restricción:} Se relaciona la fuente de corriente con las corrientes de malla que la atraviesan:
+                  \begin{equation*}
+                      \pm i_{\text{fuente}} = i_{\text{malla } a} - i_{\text{malla } b}
+                  \end{equation*}
+            \item \textbf{Ecuación de lazo (LVK):} Se retira mentalmente la fuente de corriente (dejando el circuito abierto) y se aplica LVK al lazo mayor que engloba ambas mallas respetando las corrientes de mallas definidas anteriormente.
+        \end{enumerate}
+
+        \vspace{0.15cm}
+        \textbf{Regla clave:} No se plantea la LVK a través de ninguna rama que contenga una fuente de corriente: si la rama es externa, la corriente de malla queda fijada directamente (caso trivial); si es compartida entre dos mallas, se omiten ambas ecuaciones individuales y se combinan en una \textbf{supermalla}.
+    \end{boxTeoria}
+\end{frame}
+
+
+
+% --- CASO ESPECIAL NODOS (MOTIVACIÓN: SUPERNODO) ---
+\begin{frame}{Caso Especial en Método de Nodos}
+    En el siguiente circuito, si se fija la referencia al nodo inferior, ¿qué ocurre al intentar usar el método de nodos?
+
+    \vspace{0.3cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            % Barra inferior
+            \draw (0,0) -- (6,0);
+
+            % Rama izquierda: Fuente de corriente
+            \draw (0,0) to[I, l=$5\text{ A}$] (0,3) -- (1.5,3);
+
+            % Nodo 1 y resistencia a común
+            \draw (1.5,3) to[R, l=$2\,\Omega$] (1.5,0);
+            \fill (1.5,3) circle (2pt) node[above] {$v_1$};
+
+            % Rama entre v1 y v2: Fuente de tensión aislada
+            \draw (1.5,3) to[V, v=$12\text{ V}$, invert] (4.5,3);
+
+            % Nodo 2 y resistencia a común
+            \fill (4.5,3) circle (2pt) node[above] {$v_2$};
+            \draw (4.5,3) to[R, l=$4\,\Omega$] (4.5,0);
+
+            % Rama derecha: Resistencia a común
+            \draw (4.5,3) -- (6,3)
+            to[R, l=$8\,\Omega$] (6,0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+
+% --- CASO PARTICULAR: MÉTODO DE NODOS (SUPERNODO) ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Caso Particular en Nodos: El Supernodo}
+        Ocurre cuando una \textbf{fuente de voltaje} (independiente o dependiente) se encuentra conectada entre dos nodos no referenciales:
+        \begin{enumerate}
+            \item \textbf{Ecuación de restricción:} Se define la diferencia de potencial entre los dos nodos en función del valor de la fuente:
+                  \begin{equation*}
+                      v_j - v_k = \pm V_{\text{fuente}}
+                  \end{equation*}
+            \item \textbf{Ecuación de superficie (LCK):} Se encierran ambos nodos y la fuente dentro de una superficie cerrada (supernodo) y se aplica LCK considerando todas las ramas que salen de ella respetando los voltajes de nodos definidos anteriormente.
+        \end{enumerate}
+
+        \vspace{0.1cm}
+        \textbf{Regla clave:} No se plantea la LCK nodal clásica en ningún nodo conectado directamente a una fuente de tensión: si está atada a tierra, el potencial queda fijado directamente (caso trivial); si está conectada entre dos nodos no referenciales, se omiten ambas ecuaciones individuales y se combinan en un \textbf{supernodo}.
+    \end{boxTeoria}
+\end{frame}
+
+% --- RESUMEN Y DUALIDAD ---
+\begin{frame}{Síntesis de Métodos}
+    \begin{boxTeoria}{Dualidad: Nodos vs. Mallas}
+        \small
+        \renewcommand{\arraystretch}{1.4}
+        \begin{tabular}{p{3.2cm} p{4.8cm} p{4.8cm}}
+            \textbf{Característica}                               & \textbf{Método de Nodos}                                           & \textbf{Método de Mallas}                                              \\
+            \hline
+            \textbf{Ley fundamental}                              & LCK ($\sum i = 0$)                                                 & LVK ($\sum v = 0$)                                                     \\
+            \textbf{Incógnitas}                                   & Voltajes de nodo ($v$)                                             & Corrientes de malla ($i$)                                              \\
+            \textbf{Aporte directo (Coef. libre Sist. Matricial)} & Fuentes de corriente inyectan/extraen directamente al nodo.        & Fuentes de tensión suman/restan directamente al lazo.                  \\
+            \textbf{Simplificación (Reduce ec.)}                  & Fuente de voltaje atada a tierra (fija un potencial nodal).        & Fuente de corriente no compartida (fija una corriente de malla).       \\
+            \textbf{Requiere restricción}                         & \textbf{Supernodo} (fuente de tensión compartida entre dos nodos). & \textbf{Supermalla} (fuente de corriente compartida entre dos mallas). \\
+        \end{tabular}
+    \end{boxTeoria}
+\end{frame}
+
+
+
+
+\end{document}

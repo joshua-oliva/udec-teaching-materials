@@ -1,0 +1,240 @@
+\documentclass[10pt, aspectratio=169, handout]{beamer}
+\usepackage{udec-slides}
+\usepackage[american]{circuitikz}
+\slide{4}{Fuentes Dependientes y su Análisis}
+
+\begin{document}
+\primeraDiapo
+
+% --- FUENTES DEPENDIENTES: DEFINICIÓN ---
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Fuentes Dependientes (Controladas)}
+        Son elementos activo que, a diferencia de las fuentes independientes, su valor (voltaje o corriente) está determinado por una variable $v_x$ o $i_x$ ubicada en otra parte del circuito junto con una ganancia. Se representan gráficamente con un \textbf{rombo}.
+
+        \vspace{0.2cm}
+        \begin{center}
+            \begin{circuitikz}[scale=0.8, transform shape]
+                \draw (0,0) to[cV, l=$k_1\cdot v_x$, invert] (0,2);
+                \draw (3,0) to[cV, l=$k_2\cdot i_x$, invert] (3,2);
+                \draw (6,0) to[cI, l=$k_3\cdot v_x$] (6,2);
+                \draw (9,0) to[cI, l=$k_4\cdot i_x$] (9,2);
+            \end{circuitikz}
+        \end{center}
+        \vspace{0.2cm}
+
+        \textbf{Propiedad clave:} Existen 4 tipos (VCVS, VCCS, CCVS, CCCS). No introducen variables inmanejables, pero \textbf{siempre} requieren plantear una ecuación de control o ligadura    para poder resolver el circuito.
+    \end{boxTeoria}
+\end{frame}
+
+% --- IMPACTO EN EL ANÁLISIS ---
+\begin{frame}{Análisis de Nodos y Mallas}
+    \begin{boxTeoria}{Impacto de las Fuentes Dependientes}
+        La inclusión de estas fuentes modifica la formulación estándar de los sistemas de ecuaciones:
+
+        \begin{itemize}
+            \item \textbf{Ecuación de Ligadura:} Es obligatorio expresar la variable de control ($v_x$ o $i_x$) en términos de las incógnitas principales del método (voltajes de nodo o corrientes de malla).
+            \item \textbf{Topología (Supernodos y Supermallas):} Una fuente dependiente puede forzar la creación de supernodos o supermallas exactamente igual que una fuente independiente.
+            \item \textbf{Asimetría de la Matriz:} El sistema lineal resultante $[A][x] = [b]$ pierde la simetría respecto a su diagonal principal, ya que la dependencia inyecta o extrae energía de forma no recíproca.
+            \item \textbf{Inestabilidad y Resistencia Negativa:} Dependiendo de la ganancia de la fuente, el circuito puede presentar una resistencia equivalente negativa, lo que físicamente puede traducirse en inestabilidad.
+        \end{itemize}
+    \end{boxTeoria}
+\end{frame}
+
+% --- EJERCICIO: ANÁLISIS DE MALLAS / NODOS ---
+\begin{frame}{Problema 1}
+    Determinar la corriente $i_x$.
+    \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape, american]
+            % Riel inferior
+            \draw (0,0) -- (8,0);
+
+            % Rama 1: Fuente independiente de 2 A
+            \draw (0,0) to[I, l=$2\text{ A}$] (0,3) -- (2,3);
+
+            % Rama 2: Resistencia de 10 Ohm con corriente ix
+            \draw (2,3) to[R, l=$10\,\Omega$, *-*, i_>=$i_x$] (2,0);
+
+            % Resistencia superior izquierda: 20 Ohm
+            \draw (2,3) to[R, l=$20\,\Omega$] (4,3);
+
+            % Rama 3: Fuente dependiente de corriente (1.5 ix)
+            \draw (4,0) to[cI, l_=$1.5i_x$, *-*] (4,3);
+
+            % Resistencia superior derecha: 25 Ohm
+            \draw (4,3) to[R, l=$25\,\Omega$] (6,3);
+
+            % Rama 4: Resistencia de 5 Ohm
+            \draw (6,3) to[R, l=$5\,\Omega$, *-*] (6,0);
+
+            % Rama 5: Fuente independiente de 5 A
+            \draw (6,3) -- (8,3) to[I, l=$5\text{ A}$, invert] (8,0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- EJERCICIO: ANÁLISIS DE MALLAS / NODOS ---
+\begin{frame}{Ejercicio Práctico}
+
+    Calcular cada corriente de malla en el circuito aplicando análisis de mallas y calcular todos los voltajes de nodo (referencia a elección).
+
+    \begin{center}
+        \begin{circuitikz}[scale=0.8, transform shape, american]
+            % Malla inferior izquierda
+            \draw (0,0) to[V, l_=$6\text{ V}$, invert] (0,2)
+            to[R, l=$5\,\Omega$] (2,2)
+            to[R, l=$1\,\Omega$, v=$v_x$] (4,2)
+            to[V, l=$2\text{ V}$, *-*, invert] (4,0)
+            -- (0,0);
+
+            % Bucle superior (resistencia 12 Ohm y fuente dependiente 0.1vx)
+            \draw (4,2) -- (4,4)
+            to[R, l=$12\,\Omega$] (6.5,4)
+            to[cI, l=$0.1v_x$] (6.5,2);
+
+            % Conexión intermedia (resistencia 12 Ohm)
+            \draw (4,2) to[R, l_=$12\,\Omega$, -*] (6.5,2);
+
+            % Malla inferior derecha
+            \draw (6.5,2) to[V, l=$1.5\text{ V}$, invert] (6.5,0)
+            to[R, l=$3\,\Omega$] (4,0);
+        \end{circuitikz}
+    \end{center}
+
+\end{frame}
+
+% --- EJERCICIO: CCVS (VOLTAJE CONTROLADA POR CORRIENTE) ---
+\begin{frame}{Ejercicio Práctico}
+
+    Calcular la potencia disipada por la resistencia de $2\,\Omega$ en el circuito aplicando análisis de nodos y análisis de mallas.
+
+    \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape, american]
+            % Riel inferior de referencia
+            \draw (0,0) -- (8,0);
+
+            % Fuente de tensión de 60 V (izquierda)
+            \draw (0,0) to[V, l=$60\text{ V}$, invert] (0,2);
+
+            % Puente superior con resistencia de 5 Ohm y corriente ia
+            \draw (0,2) -- (0,3.5)
+            to[R, l=$5\,\Omega$, i>=$i_a$] (8,3.5)
+            -- (8,2);
+
+            % Rama horizontal intermedia
+            \draw (0,2) to[R, l=$2\,\Omega$, *-*] (2.5,2)
+            to[I, l=$4\text{ A}$, *-*] (5,2)
+            to[R, l=$3\,\Omega$, -*] (8,2);
+
+            % Fuente dependiente de tensión controlada por corriente (6ia)
+            \draw (2.5,2) to[cV, l_=$6i_a$, *-*] (2.5,0);
+
+            % Resistencia de 4 Ohm
+            \draw (5,2) to[R, l=$4\,\Omega$, *-*] (5,0);
+
+            % Fuente independiente de 5 A (derecha)
+            \draw (8,2) to[I, l=$5\text{ A}$, *-*] (8,0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% --- EJERCICIO: VCVS (VOLTAJE CONTROLADA POR VOLTAJE) ---
+\begin{frame}{Ejercicio Práctico}
+    Determinar el voltaje $v_A$ en el circuito aplicando análisis de nodos (supernodo) y comparar planteando análisis de mallas.
+
+    \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape, american]
+            % Riel inferior
+            \draw (0,0) -- (6,0);
+
+            % Fuente independiente de 5 A (izquierda)
+            \draw (0,0) to[I, l=$5\text{ A}$] (0,2);
+
+            % Rama horizontal intermedia
+            \draw (0,2) to[R, l=$2\,\Omega$, *-*] (3,2)
+            to[I, l_=$8\text{ A}$, *-*, invert] (6,2);
+
+            % Resistencia central de 5 Ohm con voltaje vA
+            \draw (3,2) to[R, l_=$5\,\Omega$, v^=$v_A$, *-*] (3,0);
+
+            % Resistencia de 2.5 Ohm (derecha)
+            \draw (6,2) to[R, l=$2.5\,\Omega$] (6,0);
+
+            % Rama superior curva: Fuente de voltaje dependiente (0.8vA)
+            \draw (0,2) to[out=90, in=180] (2,3.5)
+            to[cV, l=$0.8v_A$] (4,3.5)
+            to[out=0, in=90] (6,2);
+        \end{circuitikz}
+    \end{center}
+
+\end{frame}
+
+% --- EJERCICIO BONUS: DOBLE FUENTE DEPENDIENTE ---
+\begin{frame}{Ejercicio Bonus}
+
+    Determinar el voltaje $v_a$ y la corriente $i_x$ aplicando análisis de nodos y análisis de mallas.
+
+    \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape, american]
+            % Riel inferior
+            \draw (0,0) -- (6,0);
+
+            % Columna izquierda
+            \draw (0,0) to[cV, l=$0.1v_a$, invert] (0,2.5)
+            to[R, l=$4.7\text{ k}\Omega$, i_=$i_x$, *-*] (0,5)
+            -- (3,5);
+
+            % Columna central
+            \draw (3,0) to[R, l=$4.7\text{ k}\Omega$, *-*] (3,2.5)
+            to[V, l_=$9\text{ V}$, *-*] (3,5);
+
+            % Columna derecha
+            \draw (6,0) to[cV, l_=$0.1i_x$, invert] (6,2.5)
+            -- (6,5);
+
+            \draw (3,5) to[R, l^=$4.7\text{ k}\Omega$, v_=$v_a$] (6,5);
+
+            % Conexiones intermedias horizontales
+            \draw (3,2.5) to[R, l_=$4.7\text{ k}\Omega$] (0,2.5);
+
+            \draw (3,2.5) to[R, l=$4.7\text{ k}\Omega$, -*] (6,2.5);
+        \end{circuitikz}
+    \end{center}
+
+\end{frame}
+
+% --- EJERCICIO: FUENTES DEPENDIENTES CON CONTROL EN RAMAS DE TENSIÓN ---
+\begin{frame}{Ejercicio Práctico}
+
+    Determinar las corrientes $i_2$ e $i_3$ aplicando análisis de mallas y comparar el planteamiento mediante análisis de nodos.
+
+    \begin{center}
+        \begin{circuitikz}[scale=0.85, transform shape, american]
+            % Riel inferior de referencia
+            \draw (0,0) -- (8,0);
+
+            % Rama 1: Fuente independiente de 2 mA (izquierda)
+            \draw (0,0) to[I, l=$2\text{ mA}$] (0,2.5) -- (2,2.5);
+
+            % Rama 2: Resistencia de 5 kOhm
+            \draw (2,2.5) to[R, l_=$5\text{ k}\Omega$, *-*] (2,0);
+
+            % Rama horizontal superior izquierda (Fuente de 4 V con corriente i2)
+            \draw (4.5,2.5) to[V, l_=$4\text{ V}$, i_=$i_2$, invert] (2,2.5);
+
+            % Rama 3 (Central): Fuente de tensión dependiente (1000 i3)
+            \draw (4.5,2.5) to[cV, l_=$1\,000i_3$, *-*] (4.5,0);
+
+            % Rama horizontal superior derecha (Fuente de 6 V con corriente i3)
+            \draw (7,2.5) to[V, l_=$6\text{ V}$, i_=$i_3$, invert] (4.5,2.5);
+
+            % Rama 4: Resistencia de 10 kOhm
+            \draw (7,2.5) to[R, l_=$10\text{ k}\Omega$, *-*] (7,0);
+
+            % Rama 5: Fuente dependiente de corriente (0.5 i2) (derecha)
+            \draw (7,2.5) -- (8.5,2.5)
+            to[cI, l=$0.5i_2$] (8.5,0) -- (7, 0);
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+\end{document}

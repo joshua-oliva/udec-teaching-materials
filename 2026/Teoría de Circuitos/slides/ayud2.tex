@@ -1,0 +1,336 @@
+\documentclass[10pt, aspectratio=169, handout]{beamer}
+\usepackage[american]{circuitikz}
+\usepackage{udec-slides}
+\slide{2}{LVK y El Método de Mallas/Enlaces}
+
+\begin{document}
+\primeraDiapo
+
+% =====================================================================
+% DIAPOSITIVAS DE TEORÍA
+% =====================================================================
+
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Convención Pasiva de Signos}
+        Asumimos que la corriente entra por el terminal positivo de un elemento pasivo, produciendo una \textbf{caída de tensión}:
+        \begin{equation*}
+            v = i \cdot R \quad (+ \rightarrow -)
+        \end{equation*}
+        Si al recorrer la malla atravesamos una fuente de voltaje desde su terminal negativo al positivo ($- \rightarrow +$), se registra como una \textbf{subida de tensión} (se anota con signo opuesto en la sumatoria).
+
+        \vspace{0.3cm}
+        En términos de energía, si la corriente real entra por el \textbf{terminal negativo}, la potencia absorbida se define matemáticamente con signo negativo (indicando que el elemento entrega energía al circuito):
+        \begin{equation*}
+            P = -v \cdot i \quad \implies \quad P < 0 \text{ (Entrega de energía)}
+        \end{equation*}
+    \end{boxTeoria}
+\end{frame}
+
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Ley de Voltajes de Kirchhoff (LVK)}
+        La base del análisis de mallas es la LVK. En cada trayectoria cerrada (malla), la suma algebraica de caídas y subidas de tensión es igual a cero.
+        \begin{equation*}
+            \sum_{k=1}^{N} v_k = 0 \quad \text{(alrededor de un lazo cerrado)}
+        \end{equation*}
+    \end{boxTeoria}
+\end{frame}
+
+% ------------------- NUEVA DIAPOSITIVA -------------------
+\begin{frame}{Ejemplo Práctico: Convención Pasiva}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            \begin{center}
+                \shorthandoff{<>}
+                \begin{circuitikz}[scale=0.9, transform shape]
+                    % Circuito simple con corriente real de rama
+                    \draw (0,0) to[V, v=$V_s$] (0,4)
+                    to[short, i=$I_{\text{real}}$] (3,4)
+                    % Al poner v=$v_R$, circuitikz asume el + por donde entra la flecha (arriba)
+                    to[R, l=$R$, v=$v_R$] (3,0)
+                    to[short] (0,0);
+                \end{circuitikz}
+                \shorthandon{<>}
+            \end{center}
+        \end{column}
+
+        \begin{column}{0.55\textwidth}
+            \uncover<2->{\begin{boxTeoria}{El ``Auto-ajuste'' Matemático}
+                    \begin{itemize}
+                        \item Se asume una dirección para la corriente real.
+                        \item Se fija la polaridad obligando a que la corriente entre por el terminal \textbf{positivo} del resistor.
+                        \item \textbf{¿Y si asumimos el sentido incorrecto?} \\
+                              El cálculo nos dará una corriente negativa ($I < 0$). Por Ley de Ohm ($v_R = I \cdot R$), el voltaje también será negativo.
+                        \item \textbf{Física intacta:} \\
+                              La potencia disipada $P = v_R \cdot I$ será el producto de dos negativos $\rightarrow$ \textbf{¡Siempre positiva!}
+                    \end{itemize}
+                \end{boxTeoria}}
+        \end{column}
+    \end{columns}
+\end{frame}
+% ---------------------------------------------------------
+
+\begin{frame}{Marco Teórico}
+    \begin{boxTeoria}{Corrientes de Malla vs. Corrientes de Rama}
+        \begin{itemize}
+            \item \textbf{Corriente de rama:} Corriente física real que fluye por un elemento.
+            \item \textbf{Corriente de malla:} Variable ficticia asignada a un bucle cerrado.
+        \end{itemize}
+        En las \textbf{ramas de enlace} (elementos compartidos por dos mallas contiguas), la corriente real es la superposición algebraica:
+        \begin{equation*}
+            i_{\text{rama}} = i_A - i_B
+        \end{equation*}
+        \textit{(Asumiendo que $i_A$ e $i_B$ circulan en direcciones opuestas a través del elemento).}
+    \end{boxTeoria}
+\end{frame}
+
+% =====================================================================
+% DIAPOSITIVA 1: PLANTEAMIENTO BASE
+% =====================================================================
+\begin{frame}{Demostración LVK en Paralelo: Planteamiento}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \shorthandoff{<>}
+                \begin{circuitikz}[scale=0.95, transform shape]
+                    % Estructura base
+                    \draw (0,1) node[left]{$A$} to[short, i=\textcolor{blue!80!black}{$I_{\text{total}}$}] (1.5,1);
+                    \draw (1.5,1) -- (1.5,2.5) -- (2.5,2.5) to[R=$R_1$] (4.5,2.5) -- (5.5,2.5) -- (5.5,1);
+                    \draw (1.5,1) -- (1.5,-0.5) -- (2.5,-0.5) to[R=$R_2$] (4.5,-0.5) -- (5.5,-0.5) -- (5.5,1);
+                    \draw (5.5,1) -- (6.5,1) node[right]{$B$};
+                \end{circuitikz}
+                \shorthandon{<>}
+            \end{center}
+        \end{column}%
+        \begin{column}{0.5\textwidth}
+            \textbf{Objetivo:} Demostrar mediante la Ley de Voltajes de Kirchhoff (LVK) que dos elementos conectados en paralelo comparten exactamente la misma caída de potencial.
+
+            \vspace{0.5cm}
+            \textit{¿Cómo aplicamos la LVK en este lazo cerrado? Veamos dos enfoques distintos.}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =====================================================================
+% DIAPOSITIVA 2: ENFOQUE DE RAMAS
+% =====================================================================
+\begin{frame}{Demostración LVK en Paralelo: Ramas}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \shorthandoff{<>}
+                \begin{circuitikz}[scale=0.95, transform shape]
+                    % Estructura base
+                    \draw (0,1) node[left]{$A$} to[short, i=\textcolor{blue!80!black}{$I_{\text{total}}$}] (1.5,1);
+                    \draw (1.5,1) -- (1.5,2.5) -- (2.5,2.5) to[R=$R_1$] (4.5,2.5) -- (5.5,2.5) -- (5.5,1);
+                    \draw (1.5,1) -- (1.5,-0.5) -- (2.5,-0.5) to[R=$R_2$] (4.5,-0.5) -- (5.5,-0.5) -- (5.5,1);
+                    \draw (5.5,1) -- (6.5,1) node[right]{$B$};
+
+                    % Agregado: Corrientes de Rama
+                    \draw (1.5,2.5) to[short, i=\textcolor{red}{$I_1$}] (2.5,2.5);
+                    \draw (1.5,-0.5) to[short, i=\textcolor{red}{$I_2$}] (2.5,-0.5);
+
+                    % Polaridad en R1
+                    \node[red] at (2.7, 1.9) {$+$}; \node[red] at (4.3, 1.9) {$-$};
+                    \node[red] at (3.5, 1.9) {$V_1$};
+
+                    % Polaridad en R2
+                    \node[red] at (2.7, -1.1) {$+$}; \node[red] at (4.3, -1.1) {$-$};
+                    \node[red] at (3.5, -1.1) {$V_2$};
+                \end{circuitikz}
+                \shorthandon{<>}
+            \end{center}
+        \end{column}%
+        \begin{column}{0.5\textwidth}
+            \uncover<2->{\begin{boxTeoria}{Enfoque 1: Corrientes de Rama}
+                    Asignamos $I_1$ e $I_2$ en el sentido real (de $A$ a $B$).
+                    \begin{itemize}
+                        \item Ambas resistencias tienen su polo ($+$) en el nodo $A$.
+                        \item Al recorrer el lazo en sentido horario pasamos por $R_1$ de ($+$ a $-$) y por $R_2$ de ($-$ a $+$):
+                    \end{itemize}
+                    $$-V_1 + V_2 = 0 \implies V_1 = V_2$$
+                    \textit{Conclusión directa y alineada a la física del circuito.}
+                \end{boxTeoria}}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =====================================================================
+% DIAPOSITIVA 3: ENFOQUE DE MALLA
+% =====================================================================
+\begin{frame}{Demostración LVK en Paralelo: Malla}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \shorthandoff{<>}
+                \begin{circuitikz}[scale=0.95, transform shape]
+                    % Estructura base
+                    \draw (0,1) node[left]{$A$} to[short, i=\textcolor{blue!80!black}{$I_{\text{total}}$}] (1.5,1);
+                    \draw (1.5,1) -- (1.5,2.5) -- (2.5,2.5) to[R=$R_1$] (4.5,2.5) -- (5.5,2.5) -- (5.5,1);
+                    \draw (1.5,1) -- (1.5,-0.5) -- (2.5,-0.5) to[R=$R_2$] (4.5,-0.5) -- (5.5,-0.5) -- (5.5,1);
+                    \draw (5.5,1) -- (6.5,1) node[right]{$B$};
+
+                    % Agregado: Corriente de Malla
+                    \draw[thick, ->, >=stealth, purple] (3.5,1) arc (150:-150:0.6) node[midway, right] {$i_{\text{lazo}}$};
+
+                    % Polaridad en R1 (coincide con el sentido A -> B)
+                    \node[purple] at (2.7, 1.9) {$+$}; \node[purple] at (4.3, 1.9) {$-$};
+                    \node[purple] at (3.5, 1.9) {$V_{R1}$};
+
+                    % Polaridad en R2 (Forzada al revés por el giro de la malla)
+                    \node[purple] at (4.3, -1.1) {$+$}; \node[purple] at (2.7, -1.1) {$-$};
+                    \node[purple] at (3.5, -1.1) {$V_{R2}'$};
+                \end{circuitikz}
+                \shorthandon{<>}
+            \end{center}
+        \end{column}%
+        \begin{column}{0.5\textwidth}
+            \uncover<2->{\begin{boxTeoria}{Enfoque 2: Lazo de Malla}
+                    Asumimos una corriente de lazo $i_{\text{lazo}}$ horaria.
+                    \begin{itemize}
+                        \item $R_1$ tiene ($+$) a la izquierda, pero $R_2$ ahora tiene ($+$) a la \textbf{derecha}.
+                        \item LVK: $V_{R1} + V_{R2}' = 0$
+                        \item \textbf{¿Hay una contradicción?} No. El voltaje definido por la malla ($V_{R2}'$) está al revés que el voltaje real de los nodos ($V_2$). Físicamente, $V_{R2}' = -V_2$.
+                    \end{itemize}
+                    Sustituyendo:
+                    $$V_{R1} + (-V_2) = 0 \implies V_{R1} = V_2$$
+                \end{boxTeoria}}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =====================================================================
+% DIAPOSITIVAS DE PROBLEMAS (SÓLO PLANTEAMIENTOS)
+% =====================================================================
+
+% =====================================================================
+% DIAPOSITIVA: PASOS DEL MÉTODO DE MALLAS
+% =====================================================================
+\begin{frame}{Marco Teórico}
+    \framesubtitle{Basado en la \textbf{Ley de Voltajes de Kirchhoff (LVK)}}
+    \begin{boxTeoria}{Método de Corrientes de Malla}
+        \begin{enumerate}
+            \item Se asignan $M$ corrientes de malla ficticias $\{i_1, \dots, i_M\}$, usualmente en sentido horario.
+            \item \textbf{Reducción de mallas triviales:} Si una fuente de corriente pertenece exclusivamente a una malla periférica (no compartida), fija directamente su valor ($i_j = \pm I_s$), eliminándola como incógnita del sistema.
+            \item En las mallas restantes, se plantea LVK ($\sum v_{\text{caídas}} = 0$) expresando cada tensión en función de las corrientes de malla (mediante la Ley de Ohm):
+                  \begin{equation*}
+                      v_k = (i_a - i_b) \cdot R_k \quad \implies \quad \mathbf{R}\,\mathbf{i} = \mathbf{v}_{\text{fuentes}}
+                  \end{equation*}
+            \item Se resuelve el sistema de ecuaciones para obtener las corrientes de malla desconocidas.
+        \end{enumerate}
+    \end{boxTeoria}
+\end{frame}
+% =====================================================================
+% DIAPOSITIVA: REPASO DE REGLA DE CRAMER
+% =====================================================================
+\begin{frame}{Herramienta Matemática: Regla de Cramer}
+    Para resolver el sistema de ecuaciones resultante de la forma $[R][I] = [V]$:
+    \begin{equation*}
+        \begin{bmatrix}
+            R_{11} & R_{12} & R_{13} \\
+            R_{21} & R_{22} & R_{23} \\
+            R_{31} & R_{32} & R_{33}
+        \end{bmatrix}
+        \begin{bmatrix}
+            i_1 \\ i_2 \\ i_3
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            V_1 \\ V_2 \\ V_3
+        \end{bmatrix}
+    \end{equation*}
+
+    \begin{boxTeoria}{Cálculo de Incógnitas}
+        La regla de Cramer establece que cada corriente $i_k$ se calcula como el cociente de dos determinantes:
+        \begin{equation*}
+            i_k = \frac{\Delta_k}{\Delta}
+        \end{equation*}
+        \begin{itemize}
+            \item $\Delta$: Es el determinante de la matriz original de coeficientes de resistencia $[R]$.
+            \item $\Delta_k$: Es el determinante de la matriz que se obtiene al \textbf{reemplazar la columna $\mathbf{k}$} de la matriz original por el vector de términos independientes (los voltajes $[V]$).
+        \end{itemize}
+    \end{boxTeoria}
+\end{frame}
+
+\begin{frame}{Aplicación del Método de Mallas}
+    \begin{center}
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            % Estructura del circuito
+            \draw (0,0) to[V, v=$10\text{V}$] (0,3)
+            to[R, l=$2\,\Omega$] (4,3)
+            to[R, l=$4\,\Omega$] (4,0)
+            to[short] (0,0);
+            \draw (4,3) to[R, l=$6\,\Omega$] (8,3)
+            to[V, v=$5\text{V}$] (8,0)
+            to[short] (4,0);
+
+            % Indicadores de malla (Aparecen en el click 2)
+            \uncover<2->{
+                \draw[thick, ->, >=stealth, blue] (2,1.5) arc (150:-150:0.6) node[midway, right] {$i_1$};
+                \draw[thick, ->, >=stealth, blue] (6,1.5) arc (150:-150:0.6) node[midway, right] {$i_2$};
+            }
+        \end{circuitikz}
+        \shorthandon{<>}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Problema 2}
+    Determine el sistema matricial para las corrientes.
+
+    \begin{center}
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.8, transform shape]
+            % Estructura del circuito
+            \draw (0,3.5) to[V, v=$12\text{V}$] (3,3.5)
+            (3,3.5) to[R, l=$10\,\Omega$] (3,0)
+            (3,0) to[V, v=$6\text{V}$] (0,0)
+            (0,0) to[R, l=$1\,\Omega$] (0,3.5);
+            \draw (3,3.5) to[R, l=$4\,\Omega$] (6,3.5)
+            (6,3.5) to[R, l=$8\,\Omega$] (6,0)
+            (6,0) to[R, l=$3\,\Omega$] (3,0);
+            \draw (6,3.5) to[V, v=$8\text{V}$] (9,3.5)
+            (9,3.5) to[R, l=$2\,\Omega$] (9,0)
+            (9,0) to[R, l=$5\,\Omega$] (6,0);
+
+            % Indicadores de malla (Aparecen en el click 2)
+            \uncover<2->{
+                \draw[thick, ->, >=stealth, blue] (1.5,1.75) arc (150:-150:0.5) node[midway, right] {$i_1$};
+                \draw[thick, ->, >=stealth, blue] (4.5,1.75) arc (150:-150:0.5) node[midway, right] {$i_2$};
+                \draw[thick, ->, >=stealth, blue] (7.5,1.75) arc (150:-150:0.5) node[midway, right] {$i_3$};
+            }
+        \end{circuitikz}
+        \shorthandon{<>}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Problema 3}
+    Plantee las ecuaciones para el siguiente circuito.
+
+    \begin{center}
+        \shorthandoff{<>}
+        \begin{circuitikz}[scale=0.75, transform shape]
+            % Malla 1 (Izquierda inferior)
+            \draw (0,0) to[V, v=$15\text{V}$] (0,4)
+            to[R, l=$4\,\Omega$] (4,4)
+            to[R, l=$2\,\Omega$] (4,0)
+            to[short] (0,0);
+            % Malla 2 (Derecha inferior)
+            \draw (4,4) to[V, v=$10\text{V}$] (8,4) % Fuente flotante compartida M2-M3
+            to[R, l=$5\,\Omega$] (8,0)
+            to[short] (4,0);
+            % Malla 3 (Superior - forma de techo)
+            \draw (0,4) to[R, l=$3\,\Omega$] (4,7)
+            to[R, l=$6\,\Omega$] (8,4);
+
+            % Indicadores de malla (Aparecen en el click 2)
+            \uncover<2->{
+                \draw[thick, ->, >=stealth, blue] (2,2) arc (150:-150:0.6) node[midway, right] {$i_1$};
+                \draw[thick, ->, >=stealth, blue] (6,2) arc (150:-150:0.6) node[midway, right] {$i_2$};
+                \draw[thick, ->, >=stealth, blue] (4,5) arc (150:-150:0.5) node[midway, right] {$i_3$};
+            }
+        \end{circuitikz}
+        \shorthandon{<>}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,424 @@
+\documentclass[10pt, aspectratio=169]{beamer}
+\usepackage[american]{circuitikz}
+\usepackage{udec-slides}
+\usepackage{amsmath, amssymb, array}
+
+\slide{6}{Redes de Dos Puertos}
+
+\begin{document}
+
+\primeraDiapo
+
+% ==============================================================================
+% 1. DEFINICIÓN Y CONDICIÓN DE PUERTO
+% ==============================================================================
+\begin{frame}{Introducción a las Redes de Dos Puertos}
+    \framesubtitle{Definición del Cuadripolo y Condición de Puerto}
+
+    Una \textbf{red de dos puertos} (o cuadripolo) es un circuito eléctrico con dos pares de terminales accesibles (Puerto 1 de entrada y Puerto 2 de salida) que contiene elementos pasivos y/o fuentes dependientes (sin fuentes independientes en su interior).
+
+    \vspace{0.4cm}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.95, transform shape]
+                    % Caja del cuadripolo
+                    \draw[thick, fill=gray!10] (2,0) rectangle (5.5,2.6);
+                    \node at (3.75, 1.3) {\textbf{Red Lineal}};
+
+                    % Puerto 1
+                    \draw (0.5, 2.2) to[short, o-, i=$I_1$] (2, 2.2);
+                    \draw (2, 0.4) to[short, -o, i=$I_1$] (0.5, 0.4);
+                    \node at (0.5, 1.3) {$V_1$};
+                    \node[above] at (0.5, 1.7) {$+$};
+                    \node[below] at (0.5, 0.9) {$-$};
+
+                    % Puerto 2
+                    \draw (7, 2.2) to[short, o-, i_=$I_2$] (5.5, 2.2);
+                    \draw (5.5, 0.4) to[short, -o, i_=$I_2$] (7, 0.4);
+                    \node at (7, 1.3) {$V_2$};
+                    \node[above] at (7, 1.7) {$+$};
+                    \node[below] at (7, 0.9) {$-$};
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.53\textwidth}
+            \begin{itemize}
+                \item \textbf{Convención estándar:} Las corrientes $I_1$ e $I_2$ se asumen \textbf{entrando} por el terminal positivo de cada puerto.
+                      \vspace{0.2cm}
+                \item \textbf{Condición de Puerto:} Para que un par de terminales actúe como puerto, la corriente que entra por el terminal superior debe ser \textbf{exactamente igual} a la corriente que sale por el terminal inferior del mismo puerto.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==============================================================================
+% 2. LOS 4 JUEGOS DE PARÁMETROS (SOLO SISTEMAS DE ECUACIONES)
+% ==============================================================================
+\begin{frame}{Modelos Matemáticos del Cuadripolo}
+    \framesubtitle{Parámetros de Impedancia ($Z$), Admitancia ($Y$), Híbridos ($h$) y Transmisión ($T$)}
+
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \textbf{1. Parámetros $Z$ (Impedancia)}
+            \begin{equation*}
+                \left\{
+                \begin{aligned}
+                    V_1 & = z_{11}\,I_1 + z_{12}\,I_2 \\
+                    V_2 & = z_{21}\,I_1 + z_{22}\,I_2
+                \end{aligned}
+                \right.
+                \quad \implies \mathbf{V} = \mathbf{[Z]}\,\mathbf{I}
+            \end{equation*}
+            \centering \small Unidades: $z_{ij}$ en $[\Omega]$.
+
+            \vspace{0.5cm}
+            \raggedright
+            \textbf{3. Parámetros $h$ (Híbridos)}
+            \begin{equation*}
+                \left\{
+                \begin{aligned}
+                    V_1 & = h_{11}\,I_1 + h_{12}\,V_2 \\
+                    I_2 & = h_{21}\,I_1 + h_{22}\,V_2
+                \end{aligned}
+                \right.
+            \end{equation*}
+            \centering \small Unidades: $h_{11}\,[\Omega]$, $h_{12}, h_{21}\,[\text{adim.}]$, $h_{22}\,[\text{S}]$.
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{2. Parámetros $Y$ (Admitancia)}
+            \begin{equation*}
+                \left\{
+                \begin{aligned}
+                    I_1 & = y_{11}\,V_1 + y_{12}\,V_2 \\
+                    I_2 & = y_{21}\,V_1 + y_{22}\,V_2
+                \end{aligned}
+                \right.
+                \quad \implies \mathbf{I} = \mathbf{[Y]}\,\mathbf{V}
+            \end{equation*}
+            \centering \small Unidades: $y_{ij}$ en $[\text{S}]$.
+
+            \vspace{0.5cm}
+            \raggedright
+            \textbf{4. Parámetros $T$ o $ABCD$ (Transmisión)}
+            \begin{equation*}
+                \left\{
+                \begin{aligned}
+                    V_1 & = A\,V_2 - B\,I_2 \\
+                    I_1 & = C\,V_2 - D\,I_2
+                \end{aligned}
+                \right.
+            \end{equation*}
+            \centering \small Unidades: $A, D\,[\text{adim.}]$, $B\,[\Omega]$, $C\,[\text{S}]$.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==============================================================================
+% 3. MÉTODO DIRECTO PARA OBTENER [Z] CON NODOS (I1 E I2 SIMULTÁNEAS)
+% ==============================================================================
+\begin{frame}{Cálculo Directo de Parámetros $Z$ mediante Nodos}
+    \framesubtitle{Inyección Simultánea de Fuentes de Prueba $I_1$ e $I_2$}
+
+    En redes con múltiples nodos internos, en lugar de apagar un puerto a la vez, es más directo conectar dos fuentes de corriente ideales ($I_1$ e $I_2$) simultáneamente en ambos puertos:
+
+    \vspace{0.2cm}
+    \begin{columns}[c]
+        \begin{column}{0.46\textwidth}
+            \begin{center}
+                \begin{circuitikz}[scale=0.85, transform shape]
+                    % Barra de tierra común
+                    \draw (0,0) -- (6.5,0);
+                    \node[ground] at (3.25,0) {};
+
+                    % Fuente de prueba I1
+                    \draw (0,0) to[I, l=$I_1$] (0,2.4) -- (1.5,2.4);
+                    \fill (1.5,2.4) circle (2pt) node[above] {$V_1$};
+
+                    % Caja de nodos internos
+                    \draw[thick, fill=gray!10] (1.5,0) rectangle (5.0,2.6);
+                    \node[align=center] at (3.25, 1.3) {Red con nodos\\internos ($V_a, V_b, \dots$)};
+
+                    % Fuente de prueba I2
+                    \draw (6.5,0) to[I, l_=$I_2$] (6.5,2.4) -- (5.0,2.4);
+                    \fill (5.0,2.4) circle (2pt) node[above] {$V_2$};
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+        \begin{column}{0.52\textwidth}
+            \begin{enumerate}
+                \item Los voltajes de puerto $V_1$ y $V_2$ pasan a ser directamente dos \textbf{potenciales nodales} más del circuito respecto a la referencia común.
+                \item Las corrientes $I_1$ e $I_2$ quedan como términos conocidos (parámetros literales) en el vector de excitación:
+                      \begin{equation*}
+                          \mathbf{[G]}\,\mathbf{v}_{\text{nodos}} = \mathbf{i}_{\text{fuentes}}(I_1, I_2)
+                      \end{equation*}
+                \item Al despejar o invertir el sistema para hallar $V_1$ y $V_2$ en función de $I_1$ e $I_2$, los coeficientes que acompañan a cada corriente forman directamente la matriz $\mathbf{[Z]}$:
+                      \begin{equation*}
+                          \begin{aligned}
+                              V_1 & = (\dots)\,I_1 + (\dots)\,I_2 \implies z_{11}, \, z_{12} \\
+                              V_2 & = (\dots)\,I_1 + (\dots)\,I_2 \implies z_{21}, \, z_{22}
+                          \end{aligned}
+                      \end{equation*}
+            \end{enumerate}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==============================================================================
+% 4. TABLA DE CONVERSIONES Y RECIPROCIDAD
+% ==============================================================================
+\begin{frame}{Conversión entre Parámetros y Reciprocidad}
+    \framesubtitle{Relaciones Algebraicas (con $\Delta_x = x_{11}x_{22} - x_{12}x_{21}$)}
+
+    \footnotesize
+    \renewcommand{\arraystretch}{1.9}
+    \begin{center}
+        \begin{tabular}{c | c c c c}
+                           & \textbf{Desde $[Z]$}                                                                    & \textbf{Desde $[Y]$}                                                                    & \textbf{Desde $[h]$}                                                                 & \textbf{Desde $[T]$}                                                \\
+            \hline
+            $\mathbf{[Z]}$ & $\begin{bmatrix} z_{11} & z_{12} \\ z_{21} & z_{22} \end{bmatrix}$                      & $\dfrac{1}{\Delta_y}\begin{bmatrix} y_{22} & -y_{12} \\ -y_{21} & y_{11} \end{bmatrix}$ & $\dfrac{1}{h_{22}}\begin{bmatrix} \Delta_h & h_{12} \\ -h_{21} & 1 \end{bmatrix}$    & $\dfrac{1}{C}\begin{bmatrix} A & \Delta_T \\ 1 & D \end{bmatrix}$   \\[0.4cm]
+            $\mathbf{[Y]}$ & $\dfrac{1}{\Delta_z}\begin{bmatrix} z_{22} & -z_{12} \\ -z_{21} & z_{11} \end{bmatrix}$ & $\begin{bmatrix} y_{11} & y_{12} \\ y_{21} & y_{22} \end{bmatrix}$                      & $\dfrac{1}{h_{11}}\begin{bmatrix} 1 & -h_{12} \\ h_{21} & \Delta_h \end{bmatrix}$    & $\dfrac{1}{B}\begin{bmatrix} D & -\Delta_T \\ -1 & A \end{bmatrix}$ \\[0.4cm]
+            $\mathbf{[h]}$ & $\dfrac{1}{z_{22}}\begin{bmatrix} \Delta_z & z_{12} \\ -z_{21} & 1 \end{bmatrix}$       & $\dfrac{1}{y_{11}}\begin{bmatrix} 1 & -y_{12} \\ y_{21} & \Delta_y \end{bmatrix}$       & $\begin{bmatrix} h_{11} & h_{12} \\ h_{21} & h_{22} \end{bmatrix}$                   & $\dfrac{1}{D}\begin{bmatrix} B & \Delta_T \\ -1 & C \end{bmatrix}$  \\[0.4cm]
+            $\mathbf{[T]}$ & $\dfrac{1}{z_{21}}\begin{bmatrix} z_{11} & \Delta_z \\ 1 & z_{22} \end{bmatrix}$        & $\dfrac{1}{y_{21}}\begin{bmatrix} -y_{22} & -1 \\ -\Delta_y & -y_{11} \end{bmatrix}$    & $\dfrac{1}{h_{21}}\begin{bmatrix} -\Delta_h & -h_{11} \\ -h_{22} & -1 \end{bmatrix}$ & $\begin{bmatrix} A & B \\ C & D \end{bmatrix}$
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% ==============================================================================
+% 5. INTERCONEXIÓN DE REDES Y CONDICIÓN DE PUERTO
+% ==============================================================================
+\begin{frame}{Asociación de Redes de Dos Puertos}
+    \framesubtitle{Interconexión en Serie, Paralelo y Cascada}
+
+    \begin{columns}[t]
+        % COLUMNA 1: SERIE
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{1. Conexión en Serie} \\[0.15cm]
+            \begin{circuitikz}[scale=0.68, transform shape]
+                \draw[thick, fill=red!10] (1.5,2.2) rectangle (4,3.4);
+                \node at (2.75,2.8) {$N_a$};
+                \draw[thick, fill=blue!10] (1.5,0.2) rectangle (4,1.4);
+                \node at (2.75,0.8) {$N_b$};
+                % Conexiones P1
+                \draw (0,3.1) to[short, o-, i=$I_1$] (1.5,3.1);
+                \draw (1.5,2.5) -- (0.8,2.5) -- (0.8,1.1) -- (1.5,1.1);
+                \draw (0,0.5) to[short, o-] (1.5,0.5);
+                % Conexiones P2
+                \draw (5.5,3.1) to[short, o-, i_=$I_2$] (4,3.1);
+                \draw (4,2.5) -- (4.7,2.5) -- (4.7,1.1) -- (4,1.1);
+                \draw (5.5,0.5) to[short, o-] (4,0.5);
+            \end{circuitikz}
+            \begin{equation*}
+                \mathbf{[Z_{\text{total}}] = [Z_a] + [Z_b]}
+            \end{equation*}
+        \end{column}
+
+        % COLUMNA 2: PARALELO
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{2. Conexión en Paralelo} \\[0.15cm]
+            \begin{circuitikz}[scale=0.68, transform shape]
+                \draw[thick, fill=red!10] (1.5,2.2) rectangle (4,3.4);
+                \node at (2.75,2.8) {$N_a$};
+                \draw[thick, fill=blue!10] (1.5,0.2) rectangle (4,1.4);
+                \node at (2.75,0.8) {$N_b$};
+                % Conexiones P1
+                \draw (0,2.5) to[short, o-, i=$I_1$] (0.7,2.5);
+                \draw (0.7,2.5) -- (0.7,3.1) -- (1.5,3.1);
+                \draw (0.7,2.5) -- (0.7,1.1) -- (1.5,1.1);
+                \draw (0,0.5) to[short, o-] (1.5,0.5);
+                \draw (1.1,0.5) -- (1.1,2.5) -- (1.5,2.5);
+                % Conexiones P2
+                \draw (5.5,2.5) to[short, o-, i_=$I_2$] (4.8,2.5);
+                \draw (4.8,2.5) -- (4.8,3.1) -- (4,3.1);
+                \draw (4.8,2.5) -- (4.8,1.1) -- (4,1.1);
+                \draw (5.5,0.5) to[short, o-] (4,0.5);
+                \draw (4.4,0.5) -- (4.4,2.5) -- (4,2.5);
+            \end{circuitikz}
+            \begin{equation*}
+                \mathbf{[Y_{\text{total}}] = [Y_a] + [Y_b]}
+            \end{equation*}
+        \end{column}
+
+        % COLUMNA 3: CASCADA
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{3. Conexión en Cascada} \\[0.15cm]
+            \begin{circuitikz}[scale=0.68, transform shape]
+                \draw[thick, fill=red!10] (0.8,1.2) rectangle (2.5,2.8);
+                \node at (1.65,2.0) {$N_a$};
+                \draw[thick, fill=blue!10] (3.3,1.2) rectangle (5.0,2.8);
+                \node at (4.15,2.0) {$N_b$};
+                % Conexiones
+                \draw (0,2.5) to[short, o-, i=$I_1$] (0.8,2.5);
+                \draw (0,1.5) to[short, o-] (0.8,1.5);
+                \draw (2.5,2.5) -- (3.3,2.5);
+                \draw (2.5,1.5) -- (3.3,1.5);
+                \draw (5.8,2.5) to[short, o-, i_=$I_2$] (5.0,2.5);
+                \draw (5.8,1.5) to[short, o-] (5.0,1.5);
+                \node at (2.9,0.2) {};
+            \end{circuitikz}
+            \begin{equation*}
+                \mathbf{[T_{\text{total}}] = [T_a] \cdot [T_b]}
+            \end{equation*}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.2cm}
+    \textbf{Validez de la suma de matrices (Condición de Puerto):} \\
+    La suma $[Z_a]+[Z_b]$ o $[Y_a]+[Y_b]$ es válida \textbf{únicamente si la interconexión no altera la condición de puerto} de cada subred individual (no se forman lazos parásitos que desvíen corriente entre $N_a$ y $N_b$):
+    \begin{itemize}
+        \item \textbf{En Serie:} Válida si la referencia inferior de $N_a$ y superior de $N_b$ forman un único nodo común continuo.
+        \item \textbf{En Paralelo:} Válida si ambas redes comparten exactamente el mismo nodo de tierra de entrada a salida.
+    \end{itemize}
+\end{frame}
+
+% ==============================================================================
+% 6. CIRCUITOS EQUIVALENTES (SEPARADO PARA DAR ESPACIO Y EXPLICACIÓN)
+% ==============================================================================
+\begin{frame}{Síntesis de Modelos Equivalentes}
+    \framesubtitle{Redes Equivalentes para Cuadripolos Recíprocos y Generales}
+
+    Cualquier cuadripolo puede reemplazarse por un circuito equivalente que satisfaga sus ecuaciones de puerto:
+
+    \vspace{0.3cm}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \textbf{1. Redes Recíprocas ($z_{12}=z_{21}$, $y_{12}=y_{21}$)} \\
+            No requieren fuentes dependientes. Se modelan mediante topologías puramente pasivas:
+            \begin{itemize}
+                \item \textbf{Red $T$ (Estrella) desde $[Z]$:}
+                      \begin{equation*}
+                          R_1 = z_{11} - z_{12}, \quad R_2 = z_{22} - z_{12}, \quad R_p = z_{12}
+                      \end{equation*}
+                \item \textbf{Red $\pi$ (Delta) desde $[Y]$:}
+                      \begin{equation*}
+                          G_1 = y_{11} + y_{12}, \quad G_2 = y_{22} + y_{12}, \quad G_s = -y_{12}
+                      \end{equation*}
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{2. Redes No Recíprocas (Caso General)} \\
+            Se sintetizan directamente traduciendo cada fila de la matriz a LVK (malla) o LCK (nodo). Por ejemplo, para \textbf{parámetros $[h]$}:
+            \vspace{0.2cm}
+            \begin{center}
+                \begin{circuitikz}[scale=0.72, transform shape]
+                    % Puerto 1 (LVK: V1 = h11*I1 + h12*V2)
+                    \draw (0,2.2) to[short, o-, i=$I_1$] (1.2,2.2)
+                    to[R, l=$h_{11}$] (3.0,2.2)
+                    to[cV, l_=$h_{12}V_2$] (3.0,0)
+                    to[short, -o] (0,0);
+                    \node at (0,1.1) {$V_1$};
+                    % Puerto 2 (LCK: I2 = h21*I1 + h22*V2)
+                    \draw (8.0,2.2) to[short, o-, i_=$I_2$] (6.2,2.2) -- (4.5,2.2)
+                    to[cI, l=$h_{21}I_1$] (4.5,0)
+                    to[short, -o] (8.0,0);
+                    \draw (6.2,2.2) to[R, l=$\frac{1}{h_{22}}$] (6.2,0);
+                    \node at (8.0,1.1) {$V_2$};
+                    % Tierra común
+                    \draw (3.0,0) -- (4.5,0);
+                \end{circuitikz}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ==============================================================================
+% EJERCICIO 1: CALENTAMIENTO (RED PASIVA T-PUENTEADA)
+% ==============================================================================
+\begin{frame}{Ejercicio 1}
+    \framesubtitle{Calentamiento: Red Pasiva y Circuitos Equivalentes $T$ y $\pi$}
+    Para la red de dos puertos mostrada en la figura:
+    \begin{enumerate}[a)]
+        \item Plantee las ecuaciones de nodo utilizando $I_1$ e $I_2$ como fuentes de prueba y obtenga los parámetros $\mathbf{[Z]}$.
+        \item Obtenga los parámetros $\mathbf{[Y]}$ y verifique que la red es recíproca.
+        \item Determine y dibuje las redes equivalentes $T$ y $\pi$.
+    \end{enumerate}
+
+    \vspace{0.2cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            % Barra inferior de referencia
+            \draw (0,0) to[short, o-o] (8,0);
+
+            % Terminales de puerto y resistencias T
+            \draw (0,2.2) to[short, o-, i=$I_1$] (1.2,2.2)
+            to[R, l=$2\,\Omega$] (4,2.2)
+            to[R, l=$4\,\Omega$] (6.8,2.2);
+            \draw (8,2.2) to[short, o-, i_=$I_2$] (6.8,2.2);
+
+            % Rama central a tierra
+            \draw (4,2.2) to[R, l=$2\,\Omega$] (4,0);
+            \fill (4,2.2) circle (2pt) node[below left] {$V_a$};
+            \fill (1.2,2.2) circle (2pt);
+            \fill (6.8,2.2) circle (2pt);
+            \fill (4,0) circle (2pt);
+
+            % Resistencia puente superior
+            \draw (1.2,2.2) -- (1.2,3.6)
+            to[R, l=$6\,\Omega$] (6.8,3.6)
+            -- (6.8,2.2);
+
+            % Etiquetas de voltaje de puerto
+            \node at (0,1.1) {$V_1$};
+            \node[above] at (0,1.5) {$+$};
+            \node[below] at (0,0.7) {$-$};
+
+            \node at (8,1.1) {$V_2$};
+            \node[above] at (8,1.5) {$+$};
+            \node[below] at (8,0.7) {$-$};
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+% ==============================================================================
+% EJERCICIO 2: INTERMEDIO (UNA FUENTE DEPENDIENTE)
+% ==============================================================================
+\begin{frame}{Ejercicio 2}
+    \framesubtitle{Introducción a Redes No Recíprocas con Fuentes Dependientes}
+    Para la red de dos puertos mostrada en la figura, determine:
+    \begin{enumerate}[a)]
+        \item Los parámetros de impedancia $\mathbf{[Z]}$ mediante análisis nodal, expresando la variable de control $I_x$ en función de los potenciales de nodo.
+        \item Los parámetros de transmisión $\mathbf{[T]}$, comprobando que la red no es recíproca y que cumple la relación $\Delta_T = AD - BC = \dfrac{z_{12}}{z_{21}}$.
+    \end{enumerate}
+
+    \vspace{0.2cm}
+    \begin{center}
+        \begin{circuitikz}[scale=0.9, transform shape]
+            % Barra inferior de referencia
+            \draw (0,0) to[short, o-o] (8.5,0);
+
+            % Puerto 1 a Nodo Va
+            \draw (0,2.5) to[short, o-, i=$I_1$] (1.0,2.5)
+            to[R, l=$2\,\Omega$, i>^=$I_x$] (3.8,2.5);
+            \fill (3.8,2.5) circle (2pt) node[above] {$V_a$};
+
+            % Rama central a tierra
+            \draw (3.8,2.5) to[R, l=$4\,\Omega$] (3.8,0);
+            \fill (3.8,0) circle (2pt);
+
+            % Nodo Va a Puerto 2
+            \draw (3.8,2.5) to[R, l=$4\,\Omega$] (6.5,2.5);
+            \fill (6.5,2.5) circle (2pt);
+            \draw (8.5,2.5) to[short, o-, i_=$I_2$] (6.5,2.5);
+
+            % Fuente dependiente en el Puerto 2
+            \draw (6.5,2.5) to[cI, l=$0.5\,I_x$] (6.5,0);
+            \fill (6.5,0) circle (2pt);
+
+            % Etiquetas de voltaje de puerto
+            \node at (0,1.25) {$V_1$};
+            \node[above] at (0,1.7) {$+$};
+            \node[below] at (0,0.8) {$-$};
+
+            \node at (8.5,1.25) {$V_2$};
+            \node[above] at (8.5,1.7) {$+$};
+            \node[below] at (8.5,0.8) {$-$};
+        \end{circuitikz}
+    \end{center}
+\end{frame}
+
+\end{document}
